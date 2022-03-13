@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-set -x
-
 # 这个函数用在assisted install service的ignition文件制作中
 # 我们要向coreos注入配置文件，主要是静态ip配置，镜像仓库证书，以及crio的registry配置
 # assisted install service制作的 coreos iso , 会重启1次，也就是一共有2次启动，每次启动调用的配置文件位置不一样
@@ -11,7 +8,7 @@ set -x
 # 第二次coreos启动，会在第一次启动的时候，从/opt/openshift/openshift/ 读取
 # 这个函数有2个参数，第一个参数，是第二次启动读取的目标文件名
 # 第一个参数，是注入文件内容的源文件
-get_file_content_for_ignition() {
+get_file_content_for_ignition () {
   VAR_FILE_NAME=$1
   VAR_FILE_CONTENT_IN_FILE=$2
 
@@ -53,4 +50,4 @@ EOF
   /bin/rm -f $tmppath
 }
 
-export -f get_file_content_for_ignition
+declare -fx get_file_content_for_ignition
