@@ -317,7 +317,7 @@ bash image.registries.conf.sh nexus.ocp4.redhat.ren:8083
 /bin/rm -f clients/sha256sum.txt*
 /bin/rm -rf /data/ocp4/tmp
 /bin/rm -rf operator-catalog-manifests
-find /tmp -type d -regex '^/tmp/[0-9]+$' -exec rm -rf {} + 
+/bin/rm -f index.db index.db.tar
 
 cd /data
 
