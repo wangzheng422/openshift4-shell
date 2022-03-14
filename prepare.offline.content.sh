@@ -144,7 +144,7 @@ install_build() {
         --to=${LOCAL_REG}/${LOCAL_REPO}
     fi
 
-    if [[ $var_download_file == 'file' ]]; then
+    if [[ $var_download_registry == 'file' ]]; then
       oc adm release mirror -a ${LOCAL_SECRET_JSON} \
         --from=quay.io/${UPSTREAM_REPO}/${RELEASE_NAME}:${OCP_RELEASE}-x86_64 \
         --to-dir=/data/file.registry/
@@ -222,7 +222,7 @@ echo "quay.io/wangzheng422/operator-catalog:redhat-marketplace-${var_major_versi
 bash demos.sh
 
 # build operator catalog
-find /tmp -type d -regex '^/tmp/[0-9]+$' -exec rm -rf {} + 
+# find /tmp -type d -regex '^/tmp/[0-9]+$' -exec rm -rf {} + 
 
 oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
     quay.io/wangzheng422/operator-catalog:redhat-${var_major_version}-$var_date \
@@ -232,14 +232,18 @@ oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
 sed -i 's/=.*//g' mapping-redhat.txt
 /bin/rm -rf manifests-operator-catalog-*
 
-VAR_DIR=`find /tmp -type d -regex '^/tmp/[0-9]+$' `
+podman create --name swap quay.io/wangzheng422/operator-catalog:redhat-${var_major_version}-$var_date  ls
+podman cp swap:/database/index.db - > ./index.db.tar
+podman rm -fv swap
+tar vxf index.db.tar
+
 echo "select * from related_image ;" \
-  | sqlite3 -line $VAR_DIR/index.db \
+  | sqlite3 -line index.db \
   | paste -d " " - - - | sed 's/ *image = //g' \
   | sed 's/operatorbundle_name =//g' \
   | sort | uniq > redhat-operator-image.list
 
-find /tmp -type d -regex '^/tmp/[0-9]+$' -exec rm -rf {} + 
+# find /tmp -type d -regex '^/tmp/[0-9]+$' -exec rm -rf {} + 
 
 oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
     quay.io/wangzheng422/operator-catalog:certified-${var_major_version}-$var_date \
@@ -249,14 +253,19 @@ oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
 sed -i 's/=.*//g' mapping-certified.txt
 /bin/rm -rf manifests-operator-catalog-*
 
-VAR_DIR=`find /tmp -type d -regex '^/tmp/[0-9]+$' `
+# VAR_DIR=`find /tmp -type d -regex '^/tmp/[0-9]+$' `
+podman create --name swap quay.io/wangzheng422/operator-catalog:certified-${var_major_version}-$var_date  ls
+podman cp swap:/database/index.db - > ./index.db.tar
+podman rm -fv swap
+tar vxf index.db.tar
+
 echo "select * from related_image ;" \
-  | sqlite3 -line $VAR_DIR/index.db \
+  | sqlite3 -line index.db \
   | paste -d " " - - - | sed 's/ *image = //g' \
   | sed 's/operatorbundle_name =//g' \
   | sort | uniq > certified-operator-image.list
 
-find /tmp -type d -regex '^/tmp/[0-9]+$' -exec rm -rf {} + 
+# find /tmp -type d -regex '^/tmp/[0-9]+$' -exec rm -rf {} + 
 
 oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
     quay.io/wangzheng422/operator-catalog:community-${var_major_version}-$var_date \
@@ -266,14 +275,19 @@ oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
 sed -i 's/=.*//g' mapping-community.txt
 /bin/rm -rf manifests-operator-catalog-*
 
-VAR_DIR=`find /tmp -type d -regex '^/tmp/[0-9]+$' `
+# VAR_DIR=`find /tmp -type d -regex '^/tmp/[0-9]+$' `
+podman create --name swap quay.io/wangzheng422/operator-catalog:community-${var_major_version}-$var_date  ls
+podman cp swap:/database/index.db - > ./index.db.tar
+podman rm -fv swap
+tar vxf index.db.tar
+
 echo "select * from related_image ;" \
-  | sqlite3 -line $VAR_DIR/index.db \
+  | sqlite3 -line index.db \
   | paste -d " " - - - | sed 's/ *image = //g' \
   | sed 's/operatorbundle_name =//g' \
   | sort | uniq > community-operator-image.list
 
-find /tmp -type d -regex '^/tmp/[0-9]+$' -exec rm -rf {} + 
+# find /tmp -type d -regex '^/tmp/[0-9]+$' -exec rm -rf {} + 
 
 oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
     quay.io/wangzheng422/operator-catalog:redhat-marketplace-${var_major_version}-$var_date \
@@ -283,9 +297,14 @@ oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
 sed -i 's/=.*//g' mapping-redhat-marketplace.txt
 /bin/rm -rf manifests-operator-catalog-*
 
-VAR_DIR=`find /tmp -type d -regex '^/tmp/[0-9]+$' `
+# VAR_DIR=`find /tmp -type d -regex '^/tmp/[0-9]+$' `
+podman create --name swap quay.io/wangzheng422/operator-catalog:redhat-marketplace-${var_major_version}-$var_date  ls
+podman cp swap:/database/index.db - > ./index.db.tar
+podman rm -fv swap
+tar vxf index.db.tar
+
 echo "select * from related_image ;" \
-  | sqlite3 -line $VAR_DIR/index.db \
+  | sqlite3 -line index.db \
   | paste -d " " - - - | sed 's/ *image = //g' \
   | sed 's/operatorbundle_name =//g' \
   | sort | uniq > redhat-marketplace-image.list
