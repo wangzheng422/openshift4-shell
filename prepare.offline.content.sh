@@ -61,12 +61,12 @@ mkdir -p /data/file.registry/
 /bin/rm -rf /data/ocp4/tmp/
 mkdir -p /data/ocp4/tmp/
 cd /data/ocp4/tmp/
-git clone https://github.com/wangzheng422/docker_env
+git clone https://github.com/wangzheng422/openshift4-shell
 
-cd /data/ocp4/tmp/docker_env
-git checkout dev
-git pull origin dev
-/bin/cp -f /data/ocp4/tmp/docker_env/redhat/ocp4/${var_major_version}/scripts/* /data/ocp4/
+cd /data/ocp4/tmp/openshift4-shell
+git checkout ocp-${var_major_version}
+git pull origin ocp-${var_major_version}
+/bin/cp -f /data/ocp4/tmp/openshift4-shell/* /data/ocp4/
 
 cd /data/ocp4/
 
