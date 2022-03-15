@@ -29,7 +29,7 @@ EOF
 
   RET_VAL=$(cat $tmppath | jq -c .)
 
-  FILE_JSON=$(cat $VAR_FILE_CONTENT_IN_FILE | python3 -c 'import json, yaml, sys; print(json.dumps(yaml.load(sys.stdin)))')
+  FILE_JSON=$(cat $VAR_FILE_CONTENT_IN_FILE | python3 -c 'import json, yaml, sys; print(json.dumps(yaml.safe_load(sys.stdin)))')
 
 cat << EOF > $tmppath
       {
@@ -50,4 +50,5 @@ EOF
   /bin/rm -f $tmppath
 }
 
-declare -fx get_file_content_for_ignition
+# declare -fx get_file_content_for_ignition
+export -f get_file_content_for_ignition
