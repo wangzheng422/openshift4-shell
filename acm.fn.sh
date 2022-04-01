@@ -8,6 +8,11 @@
 # 第二次coreos启动，会在第一次启动的时候，从/opt/openshift/openshift/ 读取
 # 这个函数有2个参数，第一个参数，是第二次启动读取的目标文件名
 # 第一个参数，是注入文件内容的源文件
+
+# 参数1，是第二次启动读取的目标文件名
+# 参数2，是注入文件内容的源文件
+# 返回值1，是注入文件内容的源文件，放置早参数一的位置上
+# 返回值2，是解析注入文件内容里面的路径，放置在这个位置上
 get_file_content_for_ignition () {
   VAR_FILE_NAME=$1
   VAR_FILE_CONTENT_IN_FILE=$2
@@ -31,6 +36,8 @@ EOF
 
   FILE_JSON=$(cat $VAR_FILE_CONTENT_IN_FILE | python3 -c 'import json, yaml, sys; print(json.dumps(yaml.safe_load(sys.stdin)))')
 
+  FILE_MODE=`echo $FILE_JSON | jq -r ".spec.config.storage.files[0].mode // 420 " `
+
 cat << EOF > $tmppath
       {
         "overwrite": true,
@@ -38,6 +45,7 @@ cat << EOF > $tmppath
         "user": {
           "name": "root"
         },
+        "mode": $FILE_MODE,
         "contents": {
           "source": "$( echo $FILE_JSON | jq -r .spec.config.storage.files[0].contents.source )"
         }
