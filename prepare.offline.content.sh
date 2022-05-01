@@ -72,6 +72,9 @@ cd /data/ocp4/
 
 mkdir -p /data/ocp4/clients
 
+# mirror-registry
+wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients -r -A "mirror-registry.tar.gz" https://developers.redhat.com/content-gateway/file/pub/openshift-v4/clients/mirror-registry/1.1.0/mirror-registry.tar.gz
+
 # coreos-installer
 wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients -r -A "coreos-installer_amd64" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/coreos-installer/latest/
 
