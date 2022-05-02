@@ -39,7 +39,7 @@ if [ -z "${build_number}" ] ; then
 fi
 
 echo "build_number = ${build_number}"
-# echo "var_major_version = ${var_major_version}"
+echo "var_major_version = ${var_major_version}"
 
 build_number_list=($(echo $build_number | tr "," "\n"))
 
