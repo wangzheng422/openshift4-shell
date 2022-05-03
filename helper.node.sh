@@ -59,11 +59,20 @@ mkdir -p /data/file.registry/
 
 /bin/rm -rf /data/ocp4/tmp/
 mkdir -p /data/ocp4/tmp/
+cd /data/ocp4/tmp/
+git clone https://github.com/wangzheng422/openshift4-shell
 
+cd /data/ocp4/tmp/openshift4-shell
+git checkout ocp-${var_major_version}
+git pull origin ocp-${var_major_version}
+/bin/cp -f /data/ocp4/tmp/openshift4-shell/* /data/ocp4/
 
 cd /data/ocp4/
 
 mkdir -p /data/ocp4/clients
+
+# oc-mirror
+
 
 # mirror-registry
 wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients -r -A "mirror-registry.tar.gz" https://developers.redhat.com/content-gateway/file/pub/openshift-v4/clients/mirror-registry/1.1.0/mirror-registry.tar.gz
@@ -116,9 +125,11 @@ install_build() {
     wget -O openshift-client-linux-${BUILDNUMBER}.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${BUILDNUMBER}/openshift-client-linux-${BUILDNUMBER}.tar.gz
     wget -O openshift-install-linux-${BUILDNUMBER}.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${BUILDNUMBER}/openshift-install-linux-${BUILDNUMBER}.tar.gz
     wget -O opm-linux-${BUILDNUMBER}.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${BUILDNUMBER}/opm-linux-${BUILDNUMBER}.tar.gz
+    wget -O oc-mirror.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${BUILDNUMBER}/oc-mirror.tar.gz
 
     tar -xzf openshift-client-linux-${BUILDNUMBER}.tar.gz -C /usr/local/sbin/
     tar -xzf openshift-install-linux-${BUILDNUMBER}.tar.gz -C /usr/local/sbin/
+    tar -xzf oc-mirror.tar.gz -C /usr/local/sbin/
 
     export OCP_RELEASE=${BUILDNUMBER}
     export LOCAL_REG='registry.redhat.ren:5443'
