@@ -183,6 +183,8 @@ wget -O ocp-deps-sha256sum.txt https://mirror.openshift.com/pub/openshift-v4/x86
 # podman pull quay.io/wangzheng422/qimgs:nexus-fs-image-2022-01-14-2155
 # podman save quay.io/wangzheng422/qimgs:nexus-fs-image-2022-01-14-2155 | pigz -c > nexus-fs-image.tgz
 
+install /data/ocp4/clients/butane-amd64 /usr/local/bin/butane
+
 /bin/rm -f index.html*
 /bin/rm -rf operator-catalog-manifests
 /bin/rm -f sha256sum.txt*
