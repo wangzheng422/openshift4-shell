@@ -85,7 +85,7 @@ skopeo copy \
 #     --to=docker.io/wangzheng422/operator-catalog:community-${var_major_version}-$var_date  
 
 skopeo copy \
-    docker://registry.redhat.io/redhat/community-operator-index:latest \
+    docker://registry.redhat.io/redhat/community-operator-index:v${var_major_version} \
     docker://quay.io/wangzheng422/operator-catalog:community-${var_major_version}-$var_date
 
 # oc adm catalog build --filter-by-os='linux/amd64' \
