@@ -27,10 +27,11 @@ cat << EOF > $tmppath
           "name": "root"
         },
         "contents": {
-          "source": "data:text/plain,$(cat $VAR_FILE_CONTENT_IN_FILE | python3 -c "import sys, urllib.parse; print(urllib.parse.quote(''.join(sys.stdin.readlines())))"  )"
+          "source": "data:text/plain;charset=utf-8;base64,$(cat $VAR_FILE_CONTENT_IN_FILE | python3 -c "import sys, base64; sys.stdout.buffer.write(base64.urlsafe_b64encode(bytes(''.join(sys.stdin.readlines()), 'utf-8') ) ) " )"
         }
       }
 EOF
+          # "source": "data:text/plain,$(cat $VAR_FILE_CONTENT_IN_FILE | python3 -c "import sys, urllib.parse; print(urllib.parse.quote(''.join(sys.stdin.readlines())))"  )"
 
   RET_VAL=$(cat $tmppath | jq -c .)
 

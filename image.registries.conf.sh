@@ -80,7 +80,8 @@ cat << EOF >> ./image.registries.conf
 
 EOF
 
-config_source=$(cat ./image.registries.conf | python3 -c "import sys, urllib.parse; print(urllib.parse.quote(''.join(sys.stdin.readlines())))"  )
+# config_source=$(cat ./image.registries.conf | python3 -c "import sys, urllib.parse; print(urllib.parse.quote(''.join(sys.stdin.readlines())))"  )
+config_source=$( cat ./image.registries.conf | python3 -c "import sys, base64; sys.stdout.buffer.write(base64.urlsafe_b64encode(bytes(''.join(sys.stdin.readlines()), 'utf-8') ) ) "  )
 
 cat <<EOF > 99-worker-container-registries.yaml
 apiVersion: machineconfiguration.openshift.io/v1
@@ -96,7 +97,8 @@ spec:
     storage:
       files:
       - contents:
-          source: data:text/plain,${config_source}
+          # source: data:text/plain,
+          source: data:text/plain;charset=utf-8;base64,${config_source}
           verification: {}
         filesystem: root
         mode: 420
@@ -117,7 +119,8 @@ spec:
     storage:
       files:
       - contents:
-          source: data:text/plain,${config_source}
+          # source: data:text/plain,
+          source: data:text/plain;charset=utf-8;base64,${config_source}
           verification: {}
         filesystem: root
         mode: 420
