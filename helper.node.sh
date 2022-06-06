@@ -57,19 +57,13 @@ build_number_list=($(echo $build_number | tr "," "\n"))
 mkdir -p /data/file.registry/
 # /bin/rm -rf /data/file.registry/*
 
-/bin/rm -rf /data/ocp4/tmp/
-mkdir -p /data/ocp4/tmp/
-cd /data/ocp4/tmp/
-git clone https://github.com/wangzheng422/openshift4-shell
+mkdir -p /data/ocp4/clients
 
-cd /data/ocp4/tmp/openshift4-shell
-git checkout ocp-${var_major_version}
-git pull origin ocp-${var_major_version}
-/bin/cp -f /data/ocp4/tmp/openshift4-shell/* /data/ocp4/
+/bin/cp -f /data/git.source/openshift4-shell/* /data/ocp4/
 
 cd /data/ocp4/
 
-mkdir -p /data/ocp4/clients
+
 
 # oc-mirror
 
