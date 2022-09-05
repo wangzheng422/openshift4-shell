@@ -13,7 +13,7 @@ Example: $0 -v 4.6.15,4.6.16, -m 4.6 -h 2021.01.18.1338 -f file
 
 var_download_registry='registry'
 
-while getopts ":v:m:h:f:" o; do
+while getopts ":v:m:h:f:b:" o; do
     case "${o}" in
         v)
             build_number=${OPTARG}
