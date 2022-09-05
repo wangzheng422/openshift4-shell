@@ -5,7 +5,7 @@ set -x
 
 usage() { 
   echo "
-Usage: $0 [-v <list of ocp version, seperated by ','>] [-m <ocp major version for operator hub, like '4.6'>] [-h <operator hub version, like '2021.01.18.1338'> ] [-f file <use this if want to use file director instead of docker resitry>]
+Usage: $0 [-v <list of ocp version, seperated by ',', like '4.10.26,4.10.28,'>] [-m <ocp major version for operator hub, like '4.6'>] [-b <tool branch version, like 'ocp-4.10-oc-mirror'> ] [-f file <use this if want to use file director instead of docker resitry>]
 Example: $0 -v 4.6.15,4.6.16, -m 4.6 -h 2021.01.18.1338 -f file
   " 1>&2
   exit 1 
@@ -24,6 +24,9 @@ while getopts ":v:m:h:f:" o; do
         h)
             var_date=${OPTARG}
             ;;
+        b)
+            var_branch=${OPTARG}
+            ;;
         f)
             var_download_registry='file'
             ;;
@@ -34,13 +37,13 @@ while getopts ":v:m:h:f:" o; do
 done
 shift "$((OPTIND-1))"
 
-if [ -z "${build_number}" ] || [ -z "${var_major_version}" ] || [ -z "${var_date}" ]; then
+if [ -z "${build_number}" ] || [ -z "${var_major_version}" ] || [ -z "${var_branch}" ]; then
     usage
 fi
 
 echo "build_number = ${build_number}"
 echo "var_major_version = ${var_major_version}"
-echo "var_date = ${var_date}"
+echo "var_branch = ${var_branch}"
 
 build_number_list=($(echo $build_number | tr "," "\n"))
 
@@ -64,8 +67,8 @@ cd /data/ocp4/tmp/
 git clone https://github.com/wangzheng422/openshift4-shell
 
 cd /data/ocp4/tmp/openshift4-shell
-git checkout ocp-${var_major_version}
-git pull origin ocp-${var_major_version}
+git checkout ${var_branch}
+git pull origin ${var_branch}
 /bin/cp -f /data/ocp4/tmp/openshift4-shell/* /data/ocp4/
 
 cd /data/ocp4/
@@ -216,104 +219,116 @@ podman save registry.redhat.io/quay/quay-rhel8:v3.6.2 | pigz -c > quay-rhel8.tgz
 
 cd /data/ocp4
 
-echo "quay.io/wangzheng422/operator-catalog:redhat-${var_major_version}-${var_date}" >> operator-catalog.list
-echo "quay.io/wangzheng422/operator-catalog:certified-${var_major_version}-${var_date}" >> operator-catalog.list
-echo "quay.io/wangzheng422/operator-catalog:community-${var_major_version}-${var_date}" >> operator-catalog.list
-echo "quay.io/wangzheng422/operator-catalog:redhat-marketplace-${var_major_version}-${var_date}" >> operator-catalog.list
+# echo "quay.io/wangzheng422/operator-catalog:redhat-${var_major_version}-${var_date}" >> operator-catalog.list
+# echo "quay.io/wangzheng422/operator-catalog:certified-${var_major_version}-${var_date}" >> operator-catalog.list
+# echo "quay.io/wangzheng422/operator-catalog:community-${var_major_version}-${var_date}" >> operator-catalog.list
+# echo "quay.io/wangzheng422/operator-catalog:redhat-marketplace-${var_major_version}-${var_date}" >> operator-catalog.list
 
 # 以下命令要运行 2-3个小时，耐心等待。。。
 # bash image.mirror.install.sh
 
 # some github, and so on
-bash demos.sh
+# bash demos.sh
 
 # build operator catalog
 # find /tmp -type d -regex '^/tmp/[0-9]+$' -exec rm -rf {} + 
 
-oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
-    quay.io/wangzheng422/operator-catalog:redhat-${var_major_version}-$var_date \
-    registry.redhat.ren:5443/ocp4 \
-    --manifests-only 
+# oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
+#     quay.io/wangzheng422/operator-catalog:redhat-${var_major_version}-$var_date \
+#     registry.redhat.ren:5443/ocp4 \
+#     --manifests-only 
+oc adm catalog mirror -a /data/pull-secret.json --manifests-only \
+    registry.redhat.io/redhat/redhat-operator-index:v${var_major_version} \
+    demo.redhat.ren
 /bin/cp -f manifests-operator-catalog-*/mapping.txt mapping-redhat.txt
 sed -i 's/=.*//g' mapping-redhat.txt
 /bin/rm -rf manifests-operator-catalog-*
 
-podman create --name swap quay.io/wangzheng422/operator-catalog:redhat-${var_major_version}-$var_date  ls
-podman cp swap:/database/index.db - > ./index.db.tar
-podman rm -fv swap
-tar vxf index.db.tar
+# podman create --name swap quay.io/wangzheng422/operator-catalog:redhat-${var_major_version}-$var_date  ls
+# podman cp swap:/database/index.db - > ./index.db.tar
+# podman rm -fv swap
+# tar vxf index.db.tar
 
-echo "select * from related_image ;" \
-  | sqlite3 -line index.db \
-  | paste -d " " - - - | sed 's/ *image = //g' \
-  | sed 's/operatorbundle_name =//g' \
-  | sort | uniq > redhat-operator-image.list
+# echo "select * from related_image ;" \
+#   | sqlite3 -line index.db \
+#   | paste -d " " - - - | sed 's/ *image = //g' \
+#   | sed 's/operatorbundle_name =//g' \
+#   | sort | uniq > redhat-operator-image.list
 
 # find /tmp -type d -regex '^/tmp/[0-9]+$' -exec rm -rf {} + 
 
-oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
-    quay.io/wangzheng422/operator-catalog:certified-${var_major_version}-$var_date \
-    registry.redhat.ren:5443/ocp4 \
-    --manifests-only 
+# oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
+#     quay.io/wangzheng422/operator-catalog:certified-${var_major_version}-$var_date \
+#     registry.redhat.ren:5443/ocp4 \
+#     --manifests-only 
+oc adm catalog mirror -a /data/pull-secret.json --manifests-only \
+    registry.redhat.io/redhat/certified-operator-index:v${var_major_version} \
+    demo.redhat.ren
 /bin/cp -f manifests-operator-catalog-*/mapping.txt mapping-certified.txt
 sed -i 's/=.*//g' mapping-certified.txt
 /bin/rm -rf manifests-operator-catalog-*
 
 # VAR_DIR=`find /tmp -type d -regex '^/tmp/[0-9]+$' `
-podman create --name swap quay.io/wangzheng422/operator-catalog:certified-${var_major_version}-$var_date  ls
-podman cp swap:/database/index.db - > ./index.db.tar
-podman rm -fv swap
-tar vxf index.db.tar
+# podman create --name swap quay.io/wangzheng422/operator-catalog:certified-${var_major_version}-$var_date  ls
+# podman cp swap:/database/index.db - > ./index.db.tar
+# podman rm -fv swap
+# tar vxf index.db.tar
 
-echo "select * from related_image ;" \
-  | sqlite3 -line index.db \
-  | paste -d " " - - - | sed 's/ *image = //g' \
-  | sed 's/operatorbundle_name =//g' \
-  | sort | uniq > certified-operator-image.list
+# echo "select * from related_image ;" \
+#   | sqlite3 -line index.db \
+#   | paste -d " " - - - | sed 's/ *image = //g' \
+#   | sed 's/operatorbundle_name =//g' \
+#   | sort | uniq > certified-operator-image.list
 
 # find /tmp -type d -regex '^/tmp/[0-9]+$' -exec rm -rf {} + 
 
-oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
-    quay.io/wangzheng422/operator-catalog:community-${var_major_version}-$var_date \
-    registry.redhat.ren:5443/ocp4 \
-    --manifests-only 
+# oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
+#     quay.io/wangzheng422/operator-catalog:community-${var_major_version}-$var_date \
+#     registry.redhat.ren:5443/ocp4 \
+#     --manifests-only 
+oc adm catalog mirror -a /data/pull-secret.json --manifests-only \
+    registry.redhat.io/redhat/community-operator-index:v${var_major_version} \
+    demo.redhat.ren
 /bin/cp -f manifests-operator-catalog-*/mapping.txt mapping-community.txt
 sed -i 's/=.*//g' mapping-community.txt
 /bin/rm -rf manifests-operator-catalog-*
 
 # VAR_DIR=`find /tmp -type d -regex '^/tmp/[0-9]+$' `
-podman create --name swap quay.io/wangzheng422/operator-catalog:community-${var_major_version}-$var_date  ls
-podman cp swap:/database/index.db - > ./index.db.tar
-podman rm -fv swap
-tar vxf index.db.tar
+# podman create --name swap quay.io/wangzheng422/operator-catalog:community-${var_major_version}-$var_date  ls
+# podman cp swap:/database/index.db - > ./index.db.tar
+# podman rm -fv swap
+# tar vxf index.db.tar
 
-echo "select * from related_image ;" \
-  | sqlite3 -line index.db \
-  | paste -d " " - - - | sed 's/ *image = //g' \
-  | sed 's/operatorbundle_name =//g' \
-  | sort | uniq > community-operator-image.list
+# echo "select * from related_image ;" \
+#   | sqlite3 -line index.db \
+#   | paste -d " " - - - | sed 's/ *image = //g' \
+#   | sed 's/operatorbundle_name =//g' \
+#   | sort | uniq > community-operator-image.list
 
 # find /tmp -type d -regex '^/tmp/[0-9]+$' -exec rm -rf {} + 
 
-oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
-    quay.io/wangzheng422/operator-catalog:redhat-marketplace-${var_major_version}-$var_date \
-    registry.redhat.ren:5443/ocp4 \
-    --manifests-only
+# oc adm catalog mirror  --index-filter-by-os='linux/amd64' \
+#     quay.io/wangzheng422/operator-catalog:redhat-marketplace-${var_major_version}-$var_date \
+#     registry.redhat.ren:5443/ocp4 \
+#     --manifests-only
+oc adm catalog mirror -a /data/pull-secret.json --manifests-only \
+    registry.redhat.io/redhat/redhat-marketplace-index:v${var_major_version} \
+    demo.redhat.ren
 /bin/cp -f manifests-operator-catalog-*/mapping.txt mapping-redhat-marketplace.txt
 sed -i 's/=.*//g' mapping-redhat-marketplace.txt
 /bin/rm -rf manifests-operator-catalog-*
 
 # VAR_DIR=`find /tmp -type d -regex '^/tmp/[0-9]+$' `
-podman create --name swap quay.io/wangzheng422/operator-catalog:redhat-marketplace-${var_major_version}-$var_date  ls
-podman cp swap:/database/index.db - > ./index.db.tar
-podman rm -fv swap
-tar vxf index.db.tar
+# podman create --name swap quay.io/wangzheng422/operator-catalog:redhat-marketplace-${var_major_version}-$var_date  ls
+# podman cp swap:/database/index.db - > ./index.db.tar
+# podman rm -fv swap
+# tar vxf index.db.tar
 
-echo "select * from related_image ;" \
-  | sqlite3 -line index.db \
-  | paste -d " " - - - | sed 's/ *image = //g' \
-  | sed 's/operatorbundle_name =//g' \
-  | sort | uniq > redhat-marketplace-image.list
+# echo "select * from related_image ;" \
+#   | sqlite3 -line index.db \
+#   | paste -d " " - - - | sed 's/ *image = //g' \
+#   | sed 's/operatorbundle_name =//g' \
+#   | sort | uniq > redhat-marketplace-image.list
 
 bash image.registries.conf.sh nexus.ocp4.redhat.ren:8083
 
