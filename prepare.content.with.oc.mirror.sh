@@ -240,7 +240,7 @@ cd /data/ocp4
 oc adm catalog mirror -a /data/pull-secret.json --manifests-only \
     registry.redhat.io/redhat/redhat-operator-index:v${var_major_version} \
     demo.redhat.ren
-/bin/cp -f manifests-operator-catalog-*/mapping.txt mapping-redhat.txt
+/bin/cp -f manifests-*/mapping.txt mapping-redhat.txt
 sed -i 's/=.*//g' mapping-redhat.txt
 /bin/rm -rf manifests-operator-catalog-*
 
@@ -264,7 +264,7 @@ sed -i 's/=.*//g' mapping-redhat.txt
 oc adm catalog mirror -a /data/pull-secret.json --manifests-only \
     registry.redhat.io/redhat/certified-operator-index:v${var_major_version} \
     demo.redhat.ren
-/bin/cp -f manifests-operator-catalog-*/mapping.txt mapping-certified.txt
+/bin/cp -f manifests-*/mapping.txt mapping-certified.txt
 sed -i 's/=.*//g' mapping-certified.txt
 /bin/rm -rf manifests-operator-catalog-*
 
@@ -289,7 +289,7 @@ sed -i 's/=.*//g' mapping-certified.txt
 oc adm catalog mirror -a /data/pull-secret.json --manifests-only \
     registry.redhat.io/redhat/community-operator-index:v${var_major_version} \
     demo.redhat.ren
-/bin/cp -f manifests-operator-catalog-*/mapping.txt mapping-community.txt
+/bin/cp -f manifests-*/mapping.txt mapping-community.txt
 sed -i 's/=.*//g' mapping-community.txt
 /bin/rm -rf manifests-operator-catalog-*
 
@@ -314,7 +314,7 @@ sed -i 's/=.*//g' mapping-community.txt
 oc adm catalog mirror -a /data/pull-secret.json --manifests-only \
     registry.redhat.io/redhat/redhat-marketplace-index:v${var_major_version} \
     demo.redhat.ren
-/bin/cp -f manifests-operator-catalog-*/mapping.txt mapping-redhat-marketplace.txt
+/bin/cp -f manifests-*/mapping.txt mapping-redhat-marketplace.txt
 sed -i 's/=.*//g' mapping-redhat-marketplace.txt
 /bin/rm -rf manifests-operator-catalog-*
 
