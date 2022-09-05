@@ -242,7 +242,7 @@ oc adm catalog mirror -a /data/pull-secret.json --manifests-only \
     demo.redhat.ren
 /bin/cp -f manifests-*/mapping.txt mapping-redhat.txt
 sed -i 's/=.*//g' mapping-redhat.txt
-/bin/rm -rf manifests-operator-catalog-*
+/bin/rm -rf manifests-*
 
 # podman create --name swap quay.io/wangzheng422/operator-catalog:redhat-${var_major_version}-$var_date  ls
 # podman cp swap:/database/index.db - > ./index.db.tar
@@ -266,7 +266,7 @@ oc adm catalog mirror -a /data/pull-secret.json --manifests-only \
     demo.redhat.ren
 /bin/cp -f manifests-*/mapping.txt mapping-certified.txt
 sed -i 's/=.*//g' mapping-certified.txt
-/bin/rm -rf manifests-operator-catalog-*
+/bin/rm -rf manifests-*
 
 # VAR_DIR=`find /tmp -type d -regex '^/tmp/[0-9]+$' `
 # podman create --name swap quay.io/wangzheng422/operator-catalog:certified-${var_major_version}-$var_date  ls
@@ -291,7 +291,7 @@ oc adm catalog mirror -a /data/pull-secret.json --manifests-only \
     demo.redhat.ren
 /bin/cp -f manifests-*/mapping.txt mapping-community.txt
 sed -i 's/=.*//g' mapping-community.txt
-/bin/rm -rf manifests-operator-catalog-*
+/bin/rm -rf manifests-*
 
 # VAR_DIR=`find /tmp -type d -regex '^/tmp/[0-9]+$' `
 # podman create --name swap quay.io/wangzheng422/operator-catalog:community-${var_major_version}-$var_date  ls
@@ -316,7 +316,7 @@ oc adm catalog mirror -a /data/pull-secret.json --manifests-only \
     demo.redhat.ren
 /bin/cp -f manifests-*/mapping.txt mapping-redhat-marketplace.txt
 sed -i 's/=.*//g' mapping-redhat-marketplace.txt
-/bin/rm -rf manifests-operator-catalog-*
+/bin/rm -rf manifests-*
 
 # VAR_DIR=`find /tmp -type d -regex '^/tmp/[0-9]+$' `
 # podman create --name swap quay.io/wangzheng422/operator-catalog:redhat-marketplace-${var_major_version}-$var_date  ls
