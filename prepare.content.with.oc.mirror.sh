@@ -287,7 +287,7 @@ sed -i 's/=.*//g' mapping-certified.txt
 #     registry.redhat.ren:5443/ocp4 \
 #     --manifests-only 
 oc adm catalog mirror -a /data/pull-secret.json --manifests-only \
-    registry.redhat.io/redhat/community-operator-index:v${var_major_version} \
+    registry.redhat.io/redhat/community-operator-index:v4.11 \
     demo.redhat.ren
 /bin/cp -f manifests-*/mapping.txt mapping-community.txt
 sed -i 's/=.*//g' mapping-community.txt
