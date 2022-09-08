@@ -7,7 +7,7 @@
 # 第一次的coreos启动，assisted install service会把静态配置文件，其实是一些脚本，做为initrd放到pxe的image里面，而其他的配置，会放到另外一个ignition image里面，也就是ignition file
 # 第二次coreos启动，会在第一次启动的时候，从/opt/openshift/openshift/ 读取
 # 这个函数有2个参数，第一个参数，是第二次启动读取的目标文件名
-# 第一个参数，是注入文件内容的源文件
+# 第二个参数，是注入文件内容的源文件
 
 # 参数1，是第二次启动读取的目标文件名
 # 参数2，是注入文件内容的源文件
