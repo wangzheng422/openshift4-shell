@@ -1,0 +1,15 @@
+$TTL 10 
+@ IN SOA ns1.{{ item.base_domain }}. postmaster.{{ item.base_domain }}. (
+        2014080704 ; Serial Number (date YYYYMMDD++) 
+        3H              ; refresh (3 hours)
+        30M             ; retry (30 minutes)
+        2W              ; expiry (2 weeks)
+        1W )            ; minimum (1 week)
+        IN NS ns1.{{ item.base_domain }}.
+;@       IN    LUA    A    "ifportup(6443, {'192.168.7.13', '192.168.7.14', '192.168.7.15'})"
+ns1     IN A {{ helper.ip_addr }}
+;
+{%for record in item.record %}
+{{ record.name }} IN  A   {{ record.ip_addr }}
+{%endfor%}
+

@@ -1,0 +1,8 @@
+launch=bind
+local-address=127.0.0.1
+local-port={{ pdns.port }}
+setgid=pdns
+setuid=pdns
+bind-config=/etc/pdns/bind.conf
+bind-check-interval=300
+enable-lua-records=yes

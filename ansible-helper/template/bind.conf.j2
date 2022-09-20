@@ -1,0 +1,6 @@
+{%for cls in cluster %}
+zone "{{ cls.base_domain }}" { type master; file "/etc/pdns/{{ cls.base_domain }}"; };
+{%endfor%}
+{%for cls in pdns.static %}
+zone "{{ cls.base_domain }}" { type master; file "/etc/pdns/{{ cls.base_domain }}"; };
+{%endfor%}

@@ -1,0 +1,85 @@
+---
+- name: Playbook to install pdns, ntp for helper node of openshift 4
+  hosts: localhost
+  gather_facts: false
+
+  pre_tasks: 
+  
+  - name: Ensure rpms is installed
+    yum:
+      name: "{{ packages }}"
+    become: true
+    delegate_to: localhost
+    vars:
+      packages:
+      - pdns
+      - pdns-recursor
+      - pdns-selinux
+      - chrony
+  
+  tasks:
+  - name: config pdns.conf
+    template:
+      src: ./template/pdns.conf.j2
+      dest: /etc/pdns/pdns.conf
+
+  - name: config bind.conf
+    template:
+      src: ./template/bind.conf.j2
+      dest: /etc/pdns/bind.conf
+
+  - name: config zone file
+    template:
+      src: ./template/zone.conf.j2
+      dest: /etc/pdns/{{ item.base_domain }}
+    with_items: "{{ cluster }}"
+
+  - name: config zone file for static
+    template:
+      src: ./template/zone.static.conf.j2
+      dest: /etc/pdns/{{ item.base_domain }}
+    with_items: "{{ pdns.static }}"
+
+  - name: config pdns-recursor
+    template:
+      src: ./template/recursor.conf.j2
+      dest: /etc/pdns-recursor/recursor.conf
+
+  - name: config chrony
+    template:
+      src: ./template/chrony.conf.j2
+      dest: /tmp/chrony.conf.tmp
+
+  - name: start services - pdns, and local ntp / chrony
+    service:
+      name: "{{ item }}"
+      state: restarted
+      enabled: yes
+    with_items:
+      - pdns
+      - pdns-recursor
+      - chronyd
+  
+  - name: slurp contents of temporary chrony.conf file
+    slurp:
+      src: /tmp/chrony.conf.tmp
+    register: chronybase64
+
+  - name: generate chrony machine config
+    template:
+      src: ./template/chrony-machineconfig.j2
+      dest: "./files/99-{{item}}-chrony-configuration.yaml"
+    loop:
+      - master
+      - worker
+
+  - name: Get network device system name
+    shell: "nmcli -t dev show {{ helper.nic }} | grep GENERAL.CONNECTION | cut -d: -f2"
+    register: devicesystemname
+
+  - name: Setting network device system name as a fact
+    set_fact:
+      dsname: "{{ devicesystemname.stdout }}"
+
+  - name: Setting DNS server ip on network interface "{{ dsname }}" to 127.0.0.1
+    shell: 'nmcli con mod "{{ dsname }}" ipv4.dns 127.0.0.1'
