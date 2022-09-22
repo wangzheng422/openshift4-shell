@@ -83,3 +83,6 @@
 
   - name: Setting DNS server ip on network interface "{{ dsname }}" to 127.0.0.1
     shell: 'nmcli con mod "{{ dsname }}" ipv4.dns 127.0.0.1'
+
+  - name: active network interface "{{ dsname }}"
+    shell: 'nmcli con up "{{ dsname }}" '
