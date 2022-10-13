@@ -34,6 +34,12 @@
       dest: /etc/pdns/{{ item.base_domain }}
     with_items: "{{ cluster }}"
 
+  - name: config zone reserve file
+    template:
+      src: ./template/zone.reserve.conf.j2
+      dest: /etc/pdns/{{ item.base_domain }}.reserve
+    with_items: "{{ cluster }}"
+
   - name: config zone file for static
     template:
       src: ./template/zone.static.conf.j2

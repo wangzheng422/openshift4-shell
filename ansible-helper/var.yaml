@@ -18,17 +18,26 @@ cluster:
     node:
       # - ip_addr: 192.168.7.12
       - ip_addr: 192.168.7.13
+        name: sno-master-01
       # - ip_addr: 192.168.7.14
       # - ip_addr: 192.168.7.15
   - base_domain: acm-demo-one.redhat.ren
     node: 
       - ip_addr: 192.168.7.22
+        name: acm-demo-one-master-01
       - ip_addr: 192.168.7.23
+        name: acm-demo-one-master-02
       - ip_addr: 192.168.7.24
+        name: acm-demo-one-master-03
       - ip_addr: 192.168.7.25
+        name: acm-demo-one-worker-01
   - base_domain: acm-demo-two.redhat.ren
     node: 
       - ip_addr: 192.168.7.32
+        name: acm-demo-two-master-01
       - ip_addr: 192.168.7.33
+        name: acm-demo-two-master-02
       - ip_addr: 192.168.7.34
+        name: acm-demo-two-master-03
       - ip_addr: 192.168.7.35
+        name: acm-demo-two-worker-01

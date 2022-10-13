@@ -1,0 +1,17 @@
+$TTL 10 
+@ IN SOA ns1.{{ item.base_domain }}. root(
+        2014080704 ; Serial Number (date YYYYMMDD++) 
+        3H              ; refresh (3 hours)
+        30M             ; retry (30 minutes)
+        2W              ; expiry (2 weeks)
+        1W )            ; minimum (1 week)
+        IN NS ns1.{{ item.base_domain }}.
+;@       IN    LUA    A    "ifportup(6443, {'192.168.7.13', '192.168.7.14', '192.168.7.15'})"
+;ns1     IN A {{ helper.ip_addr }}
+;
+; The api points to the IP of your load balancer
+{% for nd in item.node %}
+{{ nd.ip_addr.split('.')[3] }}	IN	PTR	{{ nd.name | lower }}.{{ item.base_domain | lower }}.
+{% endfor %}
+
+
