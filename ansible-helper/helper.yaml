@@ -37,8 +37,7 @@
   - name: config zone reserve file
     template:
       src: ./template/zone.reserve.conf.j2
-      dest: /etc/pdns/{{ item.base_domain }}.reserve
-    with_items: "{{ cluster }}"
+      dest: /etc/pdns/ptr.redhat.ren.reserve
 
   - name: config zone file for static
     template:
@@ -79,16 +78,16 @@
       - master
       - worker
 
-  - name: Get network device system name
-    shell: "nmcli -t dev show {{ helper.nic }} | grep GENERAL.CONNECTION | cut -d: -f2"
-    register: devicesystemname
+  # - name: Get network device system name
+  #   shell: "nmcli -t dev show {{ helper.nic }} | grep GENERAL.CONNECTION | cut -d: -f2"
+  #   register: devicesystemname
 
-  - name: Setting network device system name as a fact
-    set_fact:
-      dsname: "{{ devicesystemname.stdout }}"
+  # - name: Setting network device system name as a fact
+  #   set_fact:
+  #     dsname: "{{ devicesystemname.stdout }}"
 
-  - name: Setting DNS server ip on network interface "{{ dsname }}" to 127.0.0.1
-    shell: 'nmcli con mod "{{ dsname }}" ipv4.dns 127.0.0.1'
+  - name: Setting DNS server ip on network interface "{{ helper.nic }}" to 127.0.0.1
+    shell: 'nmcli con mod "{{ helper.nic }}" ipv4.dns 127.0.0.1'
 
-  - name: active network interface "{{ dsname }}"
-    shell: 'nmcli con up "{{ dsname }}" '
+  - name: active network interface "{{ helper.nic }}"
+    shell: 'nmcli con up "{{ helper.nic }}" '

@@ -1,20 +1,25 @@
 helper:
   ip_addr: 192.168.7.11
-  nic: enp1s0
+  nic: baremetal
 pdns:
   bind: 0.0.0.0
   port: 5301
   recursor_port: 53
-  forward: 8.8.8.8
+  forward: 172.21.1.1
   static:
     - base_domain: infra.redhat.ren
       record:
         - name: registry
           ip_addr: 192.168.7.11
+        - name: quay
+          ip_addr: 192.168.7.11
+        - name: quaylab
+          ip_addr: 192.168.7.11
 ntp:
   server: 192.168.7.11
 cluster:
   - base_domain: acm-demo-hub.redhat.ren
+    ptr_mask: 0/28
     node:
       # - ip_addr: 192.168.7.12
       - ip_addr: 192.168.7.13
@@ -22,22 +27,26 @@ cluster:
       # - ip_addr: 192.168.7.14
       # - ip_addr: 192.168.7.15
   - base_domain: acm-demo-one.redhat.ren
+    ptr_mask: 16/28
     node: 
       - ip_addr: 192.168.7.22
-        name: acm-demo-one-master-01
+        name: one-master-01
       - ip_addr: 192.168.7.23
-        name: acm-demo-one-master-02
+        name: one-master-02
       - ip_addr: 192.168.7.24
-        name: acm-demo-one-master-03
+        name: one-master-03
       - ip_addr: 192.168.7.25
-        name: acm-demo-one-worker-01
+        name: one-worker-01
   - base_domain: acm-demo-two.redhat.ren
+    ptr_mask: 32/28
     node: 
-      - ip_addr: 192.168.7.32
-        name: acm-demo-two-master-01
       - ip_addr: 192.168.7.33
-        name: acm-demo-two-master-02
+        name: two-master-01
       - ip_addr: 192.168.7.34
-        name: acm-demo-two-master-03
+        name: two-master-02
       - ip_addr: 192.168.7.35
-        name: acm-demo-two-worker-01
+        name: two-master-03
+      - ip_addr: 192.168.7.36
+        name: two-worker-01
+ptr: 
+  addr: 7.168.192

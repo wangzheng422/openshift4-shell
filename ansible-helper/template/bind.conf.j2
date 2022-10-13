@@ -1,7 +1,7 @@
 {%for cls in cluster %}
 zone "{{ cls.base_domain }}" { type master; file "/etc/pdns/{{ cls.base_domain }}"; };
-zone "{{ cls.node[0].ip_addr.split('.')[2] }}.{{ cls.node[0].ip_addr.split('.')[1] }}.{{ cls.node[0].ip_addr.split('.')[0] }}.in-addr.arpa"  { type master; file "/etc/pdns/{{ cls.base_domain }}.reserve"; };
 {%endfor%}
 {%for cls in pdns.static %}
 zone "{{ cls.base_domain }}" { type master; file "/etc/pdns/{{ cls.base_domain }}"; };
 {%endfor%}
+zone "{{ ptr.addr }}.in-addr.arpa"  { type master; file "/etc/pdns/ptr.redhat.ren.reserve"; };
