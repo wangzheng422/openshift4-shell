@@ -19,7 +19,6 @@ ntp:
   server: 192.168.7.11
 cluster:
   - base_domain: acm-demo-hub.redhat.ren
-    ptr_mask: 0/28
     node:
       # - ip_addr: 192.168.7.12
       - ip_addr: 192.168.7.13
@@ -27,7 +26,6 @@ cluster:
       # - ip_addr: 192.168.7.14
       # - ip_addr: 192.168.7.15
   - base_domain: acm-demo-one.redhat.ren
-    ptr_mask: 16/28
     node: 
       - ip_addr: 192.168.7.22
         name: one-master-01
@@ -38,7 +36,6 @@ cluster:
       - ip_addr: 192.168.7.25
         name: one-worker-01
   - base_domain: acm-demo-two.redhat.ren
-    ptr_mask: 32/28
     node: 
       - ip_addr: 192.168.7.33
         name: two-master-01
@@ -49,4 +46,5 @@ cluster:
       - ip_addr: 192.168.7.36
         name: two-worker-01
 ptr: 
-  addr: 7.168.192
+  - addr: 192.168.7
+    domain: ptr.redhat.ren

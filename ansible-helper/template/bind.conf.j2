@@ -4,4 +4,6 @@ zone "{{ cls.base_domain }}" { type master; file "/etc/pdns/{{ cls.base_domain }
 {%for cls in pdns.static %}
 zone "{{ cls.base_domain }}" { type master; file "/etc/pdns/{{ cls.base_domain }}"; };
 {%endfor%}
-zone "{{ ptr.addr }}.in-addr.arpa"  { type master; file "/etc/pdns/ptr.redhat.ren.reserve"; };
+{% for pt in ptr %}
+zone "{{ pt.addr.split('.')[2] }}.{{ pt.addr.split('.')[1] }}.{{ pt.addr.split('.')[0] }}.in-addr.arpa"  { type master; file "/etc/pdns/{{ pt.domain }}.reserve"; };
+{% endfor %}

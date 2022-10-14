@@ -37,7 +37,8 @@
   - name: config zone reserve file
     template:
       src: ./template/zone.reserve.conf.j2
-      dest: /etc/pdns/ptr.redhat.ren.reserve
+      dest: /etc/pdns/{{ item.domain }}.reserve
+    with_items: "{{ ptr }}"
 
   - name: config zone file for static
     template:
