@@ -181,6 +181,8 @@ wget -O ocp-deps-sha256sum.txt https://mirror.openshift.com/pub/openshift-v4/x86
 
 wget -O ocp4-upi-helpernode.zip https://github.com/wangzheng422/ocp4-upi-helpernode/archive/master.zip
 
+wget https://github.com/wangzheng422/pdns-selinux-rpm/releases/download/v0.0.1/pdns-selinux-0.0.1-0.el8.x86_64.rpm
+
 # wget -O hostpath-operator.yaml https://raw.githubusercontent.com/kubevirt/hostpath-provisioner-operator/main/deploy/operator.yaml
 # wget -O hostpath-webhook.yaml https://raw.githubusercontent.com/kubevirt/hostpath-provisioner-operator/main/deploy/webhook.yaml
 

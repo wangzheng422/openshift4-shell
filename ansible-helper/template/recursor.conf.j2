@@ -1,4 +1,4 @@
-local-address=0.0.0.0 ::
+local-address={{ pdns.bind }}
 # allow-from=192.168.7.0/0    #允许所有用户端请求
 dnssec=off    #关闭dnssec
 forward-zones={%for cls in cluster %}{{ cls.base_domain }}=127.0.0.1:5301,{%endfor%}{%for cls in pdns.static %}{{ cls.base_domain }}=127.0.0.1:5301,{%endfor%}{% for pt in ptr %}{{ pt.addr.split('.')[2] }}.{{ pt.addr.split('.')[1] }}.{{ pt.addr.split('.')[0] }}.in-addr.arpa=127.0.0.1:5301{% endfor %}
