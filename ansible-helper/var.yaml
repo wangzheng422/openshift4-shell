@@ -11,6 +11,8 @@ pdns:
       record:
         - name: registry
           ip_addr: 192.168.7.11
+        - name: nexus
+          ip_addr: 192.168.7.11
         - name: quay
           ip_addr: 192.168.7.11
         - name: quaylab
@@ -28,23 +30,23 @@ cluster:
   - base_domain: acm-demo-one.redhat.ren
     node: 
       - ip_addr: 192.168.7.22
-        name: one-master-01
+        name: one-bootstrap
       - ip_addr: 192.168.7.23
-        name: one-master-02
+        name: one-master-01
       - ip_addr: 192.168.7.24
-        name: one-master-03
+        name: one-master-02
       - ip_addr: 192.168.7.25
-        name: one-worker-01
+        name: one-master-03
   - base_domain: acm-demo-two.redhat.ren
     node: 
       - ip_addr: 192.168.7.33
-        name: two-master-01
+        name: two-bootstrap
       - ip_addr: 192.168.7.34
-        name: two-master-02
+        name: two-master-01
       - ip_addr: 192.168.7.35
-        name: two-master-03
+        name: two-master-02
       - ip_addr: 192.168.7.36
-        name: two-worker-01
+        name: two-master-03
 ptr: 
   - addr: 192.168.7
     domain: ptr.redhat.ren
