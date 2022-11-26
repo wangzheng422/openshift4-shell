@@ -130,8 +130,8 @@ install_build() {
 
     tar -xzf openshift-client-linux-${BUILDNUMBER}.tar.gz -C /usr/local/sbin/
     tar -xzf openshift-install-linux-${BUILDNUMBER}.tar.gz -C /usr/local/sbin/
-    tar -xzf oc-mirror.tar.gz -C /usr/local/sbin/
-    chmod +x /usr/local/sbin/oc-mirror
+    # tar -xzf oc-mirror.tar.gz -C /usr/local/sbin/
+    # chmod +x /usr/local/sbin/oc-mirror
 
     export OCP_RELEASE=${BUILDNUMBER}
     export LOCAL_REG='registry.redhat.ren:5443'
