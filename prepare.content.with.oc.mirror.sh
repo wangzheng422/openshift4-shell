@@ -88,7 +88,7 @@ wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients -r -A "
 wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients --recursive -A "helm-linux-amd64.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/helm/latest/
 
 # client for pipeline
-wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients --recursive -A "*linux-amd64-*.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/pipeline/latest/
+wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients --recursive -A "*linux-amd64.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/pipeline/latest/
 
 # client for butane
 wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients --recursive -A "butane-amd64" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/butane/latest/
@@ -101,6 +101,9 @@ wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients --recur
 
 # operator-sdk
 wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients --recursive -A "operator-sdk-linux-x86_64.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/operator-sdk/latest/
+
+# yq
+wget https://github.com/mikefarah/yq/releases/download/v4.30.6/yq_linux_amd64.tar.gz
 
 # rhacs
 wget -O /data/ocp4/clients/roxctl https://mirror.openshift.com/pub/rhacs/assets/latest/bin/Linux/roxctl
