@@ -10,19 +10,62 @@ $TTL 10
 ns1     IN A {{ helper.ip_addr }}
 {%if item.node | length > 1%}
 ;
+{% if item.api is defined %}
+;
+{% for var_api in item.api %}
+api             IN    A     {{ var_api.ip_addr }}
+api-int         IN    A     {{ var_api.ip_addr }}
+{% endfor %}
+;
+{% else %}
+;
 ; The api points to the IP of your load balancer
 api             IN    LUA    A    "ifportup(6443, { {%for nd in item.node %}'{{ nd.ip_addr }}', {%endfor%} })"
 api-int         IN    LUA    A    "ifportup(6443, { {%for nd in item.node %}'{{ nd.ip_addr }}', {%endfor%} })"
 ;
+{% endif %}
+;
+{% if item.apps is defined %}
+;
+{% for var_apps in item.apps %}
+*.apps              IN    A     {{ var_apps.ip_addr }}
+{% endfor %}
+;
+{% else %}
+;
 ; The wildcard also points to the load balancer
 *.apps          IN    LUA    A    "ifportup(443, { {%for nd in item.node %}'{{ nd.ip_addr }}', {%endfor%} })"
+;
+{% endif %}
+;
 {%else%}
+;
+{% if item.api is defined %}
+;
+{% for var_api in item.api %}
+api             IN    A     {{ var_api.ip_addr }}
+api-int         IN    A     {{ var_api.ip_addr }}
+{% endfor %}
+;
+{% else %}
 ;
 ; The api points to the IP of your load balancer
 api             IN    A    {{ item.node[0].ip_addr }} 
 api-int         IN    A    {{ item.node[0].ip_addr }} 
 ;
+{% endif %}
+;
+{% if item.apps is defined %}
+;
+{% for var_apps in item.apps %}
+*.apps              IN    A     {{ var_apps.ip_addr }}
+{% endfor %}
+;
+{% else %}
+;
 ; The wildcard also points to the load balancer
 *.apps          IN    A    {{ item.node[0].ip_addr }} 
+;
+{% endif %}
+;
 {%endif%}
-
