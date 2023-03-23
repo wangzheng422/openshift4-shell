@@ -68,49 +68,10 @@ unset https_proxy
 
 cd /data/ocp4/tmp/openshift4-shell
 git checkout ocp-${var_major_version}
-git pull origin ocp-${var_major_version}
+# git pull origin ocp-${var_major_version}
 /bin/cp -rf /data/ocp4/tmp/openshift4-shell/* /data/ocp4/
 
 cd /data/ocp4/
-
-mkdir -p /data/ocp4/clients
-
-# oc-mirror
-
-
-# mirror-registry
-wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients -r -A "mirror-registry.tar.gz" https://developers.redhat.com/content-gateway/file/pub/openshift-v4/clients/mirror-registry/1.1.0/mirror-registry.tar.gz
-
-# coreos-installer
-wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients -r -A "coreos-installer_amd64" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/coreos-installer/latest/
-
-# client for camle-k
-wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients -r -A "*linux*tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/camel-k/latest/
-
-# client for helm
-wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients --recursive -A "helm-linux-amd64.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/helm/latest/
-
-# client for pipeline
-wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients --recursive -A "*linux-amd64-*.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/pipeline/latest/
-
-# client for butane
-wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients --recursive -A "butane-amd64" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/butane/latest/
-
-# client for serverless
-wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients --recursive -A "kn-linux-amd64.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/serverless/latest/
-
-# kam
-wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients --recursive -A "kam-linux-amd64.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/kam/latest/
-
-# operator-sdk
-wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients --recursive -A "operator-sdk-linux-x86_64.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/operator-sdk/latest/
-
-# rhacs
-wget -O /data/ocp4/clients/roxctl https://mirror.openshift.com/pub/rhacs/assets/latest/bin/Linux/roxctl
-
-# mkdir -p /data/ocp4/rhacs-chart/
-# wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/rhacs-chart --recursive https://mirror.openshift.com/pub/rhacs/charts/
-
 
 mkdir -p /data/ocp4
 /bin/rm -f /data/finished
