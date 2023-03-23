@@ -116,9 +116,9 @@ install_build() {
     BUILDNUMBER=$1
     echo ${BUILDNUMBER}
 
-    rm -rf /data/ocp4/${BUILDNUMBER}
-    mkdir -p /data/ocp4/${BUILDNUMBER}
-    cd /data/ocp4/${BUILDNUMBER}
+    rm -rf /data/ocp-${BUILDNUMBER}
+    mkdir -p /data/ocp-${BUILDNUMBER}
+    cd /data/ocp-${BUILDNUMBER}
 
     wget -O release.txt https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${BUILDNUMBER}/release.txt
 
@@ -127,9 +127,10 @@ install_build() {
     wget -O opm-linux-${BUILDNUMBER}.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${BUILDNUMBER}/opm-linux-${BUILDNUMBER}.tar.gz
     wget -O oc-mirror.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${BUILDNUMBER}/oc-mirror.tar.gz
 
-    tar -xzf openshift-client-linux-${BUILDNUMBER}.tar.gz -C /usr/local/sbin/
-    tar -xzf openshift-install-linux-${BUILDNUMBER}.tar.gz -C /usr/local/sbin/
-    tar -xzf oc-mirror.tar.gz -C /usr/local/sbin/
+    tar -xzf openshift-client-linux-${BUILDNUMBER}.tar.gz -C /usr/local/bin/
+    tar -xzf openshift-install-linux-${BUILDNUMBER}.tar.gz -C /usr/local/bin/
+    tar -xzf oc-mirror.tar.gz -C /usr/local/bin/
+    chmod +x /usr/local/bin/oc-mirror
 
     export OCP_RELEASE=${BUILDNUMBER}
     export LOCAL_REG='registry.redhat.ren:5443'
@@ -161,6 +162,8 @@ install_build() {
 
     oc adm release extract --registry-config ${LOCAL_SECRET_JSON} --command='openshift-baremetal-install' ${RELEASE_IMAGE}
 
+    wget -O rhcos-live.x86_64.iso  https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/${BUILDNUMBER%.*}/latest/rhcos-live.x86_64.iso
+
 }
 
 for i in "${build_number_list[@]}"
@@ -173,9 +176,9 @@ done
 
 cd /data/ocp4
 
-wget --recursive --no-directories --no-parent -e robots=off --accept="rhcos-live*,rhcos-metal.x86_64.raw.gz,rhcos-installer-kernel-*,rhcos-qemu.x86_64.qcow2.gz,rhcos-openstack.x86_64.qcow2.gz"  https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/${var_major_version}/latest/
+# wget --recursive --no-directories --no-parent -e robots=off --accept="rhcos-live*,rhcos-metal.x86_64.raw.gz,rhcos-installer-kernel-*,rhcos-qemu.x86_64.qcow2.gz,rhcos-openstack.x86_64.qcow2.gz"  https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/${var_major_version}/latest/
 
-wget -O ocp-deps-sha256sum.txt https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/${var_major_version}/latest/sha256sum.txt
+# wget -O ocp-deps-sha256sum.txt https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/${var_major_version}/latest/sha256sum.txt
 
 # podman pull docker.io/sonatype/nexus3:3.33.1
 # podman save docker.io/sonatype/nexus3:3.33.1 | pigz -c > nexus.3.33.1.tgz
