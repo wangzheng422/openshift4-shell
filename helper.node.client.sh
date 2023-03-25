@@ -1,7 +1,49 @@
 #!/usr/bin/env bash
 
+
 set -e
 set -x
+
+usage() { 
+  echo "
+Usage: $0 [-v <list of ocp version, seperated by ','>] [-m <ocp major version for operator hub, like '4.6'>] [-f file <use this if want to use file director instead of docker resitry>]
+Example: $0 -v 4.6.15,4.6.16
+  " 1>&2
+  exit 1 
+}
+
+var_download_registry='registry'
+
+while getopts ":v:m:h:f:" o; do
+    case "${o}" in
+        v)
+            build_number=${OPTARG}
+            ;;
+        m)
+            var_major_version=${OPTARG}
+            ;;
+        h)
+            var_date=${OPTARG}
+            ;;
+        f)
+            var_download_registry='file'
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift "$((OPTIND-1))"
+
+if [ -z "${build_number}" ] ; then
+    usage
+fi
+
+echo "build_number = ${build_number}"
+echo "var_major_version = ${var_major_version}"
+
+build_number_list=($(echo $build_number | tr "," "\n"))
+
 
 rm -rf /data/ocp4/clients/
 mkdir -p /data/ocp4/clients
@@ -42,6 +84,74 @@ wget -O /data/ocp4/clients/roxctl https://mirror.openshift.com/pub/rhacs/assets/
 
 # mkdir -p /data/ocp4/rhacs-chart/
 # wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/rhacs-chart --recursive https://mirror.openshift.com/pub/rhacs/charts/
+
+cd /data/ocp4/
+
+mkdir -p /data/ocp4
+/bin/rm -f /data/finished
+cd /data/ocp4
+
+install_build() {
+    BUILDNUMBER=$1
+    echo ${BUILDNUMBER}
+
+    rm -rf /data/ocp-${BUILDNUMBER}
+    mkdir -p /data/ocp-${BUILDNUMBER}
+    cd /data/ocp-${BUILDNUMBER}
+
+    wget -O release.txt https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${BUILDNUMBER}/release.txt
+
+    wget -O openshift-client-linux-${BUILDNUMBER}.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${BUILDNUMBER}/openshift-client-linux-${BUILDNUMBER}.tar.gz
+    wget -O openshift-install-linux-${BUILDNUMBER}.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${BUILDNUMBER}/openshift-install-linux-${BUILDNUMBER}.tar.gz
+    wget -O opm-linux-${BUILDNUMBER}.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${BUILDNUMBER}/opm-linux-${BUILDNUMBER}.tar.gz
+    wget -O oc-mirror.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${BUILDNUMBER}/oc-mirror.tar.gz
+
+    tar -xzf openshift-client-linux-${BUILDNUMBER}.tar.gz -C /usr/local/bin/
+    # tar -xzf openshift-install-linux-${BUILDNUMBER}.tar.gz -C /usr/local/bin/
+    # tar -xzf oc-mirror.tar.gz -C /usr/local/bin/
+    # chmod +x /usr/local/bin/oc-mirror
+
+    export OCP_RELEASE=${BUILDNUMBER}
+    export LOCAL_REG='registry.redhat.ren:5443'
+    export LOCAL_REPO='ocp4/openshift4'
+    export LOCAL_RELEASE='ocp4/release'
+    export UPSTREAM_REPO='openshift-release-dev'
+    export LOCAL_SECRET_JSON="/data/pull-secret.json"
+    export OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE=${LOCAL_REG}/${LOCAL_REPO}:${OCP_RELEASE}
+    export RELEASE_NAME="ocp-release"
+
+    # oc adm release mirror -a ${LOCAL_SECRET_JSON} \
+    #   --from=quay.io/${UPSTREAM_REPO}/${RELEASE_NAME}:${OCP_RELEASE}-x86_64 \
+    #   --to-release-image=${LOCAL_REG}/${LOCAL_RELEASE}:${OCP_RELEASE}-x86_64 \
+    #   --to=${LOCAL_REG}/${LOCAL_REPO}
+
+    # if [[ $var_download_registry == 'registry' ]]; then
+    #   oc adm release mirror -a ${LOCAL_SECRET_JSON} \
+    #     --from=quay.io/${UPSTREAM_REPO}/${RELEASE_NAME}:${OCP_RELEASE}-x86_64 \
+    #     --to=${LOCAL_REG}/${LOCAL_REPO}
+    # fi
+
+    # if [[ $var_download_registry == 'file' ]]; then
+    #   oc adm release mirror -a ${LOCAL_SECRET_JSON} \
+    #     --from=quay.io/${UPSTREAM_REPO}/${RELEASE_NAME}:${OCP_RELEASE}-x86_64 \
+    #     --to-dir=/data/file.registry/
+    # fi
+
+    export RELEASE_IMAGE=$(curl -s https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${BUILDNUMBER}/release.txt | grep 'Pull From: quay.io' | awk -F ' ' '{print $3}')
+
+    oc adm release extract --registry-config ${LOCAL_SECRET_JSON} --command='openshift-baremetal-install' ${RELEASE_IMAGE}
+
+    wget -O rhcos-live.x86_64.iso  https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/${BUILDNUMBER%.*}/latest/rhcos-live.x86_64.iso
+
+}
+
+for i in "${build_number_list[@]}"
+do
+    install_build $i
+done
+# while read -r line; do
+#     install_build $line
+# done <<< "$build_number_list"
 
 
 cd /data/ocp4
