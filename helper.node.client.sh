@@ -143,6 +143,8 @@ install_build() {
 
     wget -O rhcos-live.x86_64.iso  https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/${BUILDNUMBER%.*}/latest/rhcos-live.x86_64.iso
 
+    wget -O rhcos-live.aarch64.iso https://mirror.openshift.com/pub/openshift-v4/aarch64/dependencies/rhcos/${BUILDNUMBER%.*}/latest/rhcos-live.aarch64.iso
+
 }
 
 for i in "${build_number_list[@]}"
