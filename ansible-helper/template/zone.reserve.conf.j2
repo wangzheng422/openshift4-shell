@@ -17,6 +17,13 @@ $TTL 10
 {% endif %}
 {% endfor %}
 {% endfor %}
+{% for cls in pdns.static %}
+{% for nd in cls.record %}
+{% if ( ( nd.ip_addr.split('.')[0] == item.addr.split('.')[0] ) and ( nd.ip_addr.split('.')[1] == item.addr.split('.')[1] ) and ( nd.ip_addr.split('.')[2] == item.addr.split('.')[2] ) ) %}
+{{ nd.ip_addr.split('.')[3] }}	IN	PTR	{{ nd.name | lower }}.{{ cls.base_domain | lower }}.
+{% endif %}
+{% endfor %}
+{% endfor %}
 ;end
 
 
