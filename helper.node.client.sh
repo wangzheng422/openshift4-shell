@@ -94,6 +94,8 @@ wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/h/htop-3
 wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/l/libsodium-1.0.18-2.el8.x86_64.rpm
 wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/l/luajit-2.1.0-0.16beta3.el8.x86_64.rpm
 wget https://github.com/wangzheng422/pdns-selinux-rpm/releases/download/v0.0.1/pdns-selinux-0.0.1-0.el8.x86_64.rpm
+wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/p/pdns-4.7.4-1.el8.x86_64.rpm
+wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/p/pdns-recursor-4.8.4-1.el8.x86_64.rpm
 createrepo ./
 
 cd /data/ocp4/
