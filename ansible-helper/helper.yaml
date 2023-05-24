@@ -87,8 +87,8 @@
   #   set_fact:
   #     dsname: "{{ devicesystemname.stdout }}"
 
-  - name: Setting DNS server ip on network interface "{{ helper.nic }}" to 127.0.0.1
-    shell: 'nmcli con mod "{{ helper.nic }}" ipv4.dns 127.0.0.1'
+  # - name: Setting DNS server ip on network interface "{{ helper.nic }}" to 127.0.0.1
+  #   shell: 'nmcli con mod "{{ helper.nic }}" ipv4.dns 127.0.0.1'
 
-  - name: active network interface "{{ helper.nic }}"
-    shell: 'nmcli con up "{{ helper.nic }}" '
+  # - name: active network interface "{{ helper.nic }}"
+  #   shell: 'nmcli con up "{{ helper.nic }}" '
