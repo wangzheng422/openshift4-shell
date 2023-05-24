@@ -85,6 +85,17 @@ wget -O /data/ocp4/clients/roxctl https://mirror.openshift.com/pub/rhacs/assets/
 # mkdir -p /data/ocp4/rhacs-chart/
 # wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/rhacs-chart --recursive https://mirror.openshift.com/pub/rhacs/charts/
 
+# https://centos.pkgs.org/
+mkdir -p /data/ocp4/rpms/
+cd /data/ocp4/rmps
+wget https://download-ib01.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/b/byobu-5.133-1.el8.noarch.rpm
+wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/s/screen-4.6.2-12.el8.x86_64.rpm
+wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/h/htop-3.2.1-1.el8.x86_64.rpm
+wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/l/libsodium-1.0.18-2.el8.x86_64.rpm
+wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/l/luajit-2.1.0-0.16beta3.el8.x86_64.rpm
+wget https://github.com/wangzheng422/pdns-selinux-rpm/releases/download/v0.0.1/pdns-selinux-0.0.1-0.el8.x86_64.rpm
+createrepo ./
+
 cd /data/ocp4/
 
 mkdir -p /data/ocp4
