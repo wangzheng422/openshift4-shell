@@ -87,7 +87,7 @@ wget -O /data/ocp4/clients/roxctl https://mirror.openshift.com/pub/rhacs/assets/
 
 # https://centos.pkgs.org/
 mkdir -p /data/ocp4/rpms/
-cd /data/ocp4/rmps
+cd /data/ocp4/rpms
 wget https://download-ib01.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/b/byobu-5.133-1.el8.noarch.rpm
 wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/s/screen-4.6.2-12.el8.x86_64.rpm
 wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/h/htop-3.2.1-1.el8.x86_64.rpm
