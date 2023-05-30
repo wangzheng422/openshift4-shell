@@ -9,6 +9,9 @@ $TTL 10
 ;@       IN    LUA    A    "ifportup(6443, {'192.168.7.13', '192.168.7.14', '192.168.7.15'})"
 ns1     IN A {{ helper.ip_addr }}
 ;
+{% for record in item.node %}
+{{ record.name }} IN  A   {{ record.ip_addr }}
+{% endfor %}
 {% if item.api is defined %}
 ;
 {% for var_api in item.api %}
