@@ -71,7 +71,7 @@ wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients --recur
 wget  -O "butane-amd64" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/butane/latest/butane-amd64
 
 # client for serverless
-wget  -O "kn-linux-amd64.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/serverless/latest/kn-linux-amd64.tar.gz
+wget  -O "kn-linux-amd64.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/serverless/latest/signed/x86_64/linux/kn-linux-amd64.tar.gz
 
 # kam
 wget  -O "kam-linux-amd64.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/kam/latest/kam-linux-amd64.tar.gz
