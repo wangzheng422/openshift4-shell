@@ -71,7 +71,7 @@ wget  -nd -np -e robots=off --reject="index.html*" -P /data/ocp4/clients --recur
 wget  -O "butane-amd64" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/butane/latest/butane-amd64
 
 # client for serverless
-wget  -O "kn-linux-amd64.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/serverless/latest/signed/x86_64/linux/kn-linux-amd64.tar.gz
+wget  -O "kn-linux-amd64.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/serverless/latest/kn-linux-amd64.tar.gz
 
 # kam
 wget  -O "kam-linux-amd64.tar.gz" https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/kam/latest/kam-linux-amd64.tar.gz
@@ -94,7 +94,7 @@ wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/h/htop-3
 wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/l/libsodium-1.0.18-2.el8.x86_64.rpm
 wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/l/luajit-2.1.0-0.16beta3.el8.x86_64.rpm
 wget https://github.com/wangzheng422/pdns-selinux-rpm/releases/download/v0.0.1/pdns-selinux-0.0.1-0.el8.x86_64.rpm
-wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/p/pdns-4.7.4-1.el8.x86_64.rpm
+wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/p/pdns-4.8.1-1.el8.x86_64.rpm
 wget https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/p/pdns-recursor-4.8.4-1.el8.x86_64.rpm
 createrepo ./
 

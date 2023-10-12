@@ -60,7 +60,7 @@ mkdir -p /data/file.registry/
 /bin/rm -rf /data/ocp4/tmp/
 mkdir -p /data/ocp4/tmp/
 cd /data/ocp4/tmp/
-export http_proxy="http://127.0.0.1:18801"
+export http_proxy="http://127.0.0.1:7891"
 export https_proxy=${http_proxy}
 git clone https://github.com/wangzheng422/openshift4-shell
 unset http_proxy
