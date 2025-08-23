@@ -1,0 +1,118 @@
+---
+- name: Deploy KVM Host on AWS
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Set AWS region for tasks
+      set_fact:
+        aws_region: "{{ aws_region }}"
+
+    - name: Create a VPC
+      community.aws.ec2_vpc_net:
+        name: "KVM-VPC"
+        cidr_block: "{{ vpc_cidr }}"
+        region: "{{ aws_region }}"
+        tags:
+          Name: "KVM-VPC"
+      register: vpc
+
+    - name: Create a subnet
+      community.aws.ec2_vpc_subnet:
+        vpc_id: "{{ vpc.vpc.id }}"
+        cidr: "{{ subnet_cidr }}"
+        region: "{{ aws_region }}"
+        map_public: yes
+        tags:
+          Name: "KVM-Subnet"
+      register: subnet
+
+    - name: Create an Internet Gateway
+      community.aws.ec2_vpc_igw:
+        vpc_id: "{{ vpc.vpc.id }}"
+        region: "{{ aws_region }}"
+        tags:
+          Name: "KVM-IGW"
+      register: igw
+
+    - name: Create a route table
+      community.aws.ec2_vpc_route_table:
+        vpc_id: "{{ vpc.vpc.id }}"
+        region: "{{ aws_region }}"
+        subnets:
+          - "{{ subnet.subnet.id }}"
+        routes:
+          - dest: "0.0.0.0/0"
+            gateway_id: "{{ igw.gateway_id }}"
+        tags:
+          Name: "KVM-RouteTable"
+
+    - name: Create Security Group
+      community.aws.ec2_group:
+        name: "{{ instance_name }}-sg"
+        description: "Security group for KVM Host"
+        vpc_id: "{{ vpc.vpc.id }}"
+        region: "{{ aws_region }}"
+        rules:
+          - proto: tcp
+            ports:
+              - 22
+            cidr_ip: "0.0.0.0/0"
+            rule_desc: "Allow SSH from anywhere"
+          - proto: all
+            group_name: "{{ instance_name }}-sg"
+            rule_desc: "Allow all traffic within the security group"
+      register: sg
+
+    - name: Generate list of private IPs for ENI
+      set_fact:
+        private_ips: "{{ [host_ip] + range(kvm_ip_range.start, kvm_ip_range.end + 1) | map('regex_replace', '^(.*)$', kvm_ip_range.prefix + '.\\1') | list }}"
+
+    - name: Create Network Interface (ENI)
+      community.aws.ec2_eni:
+        subnet_id: "{{ subnet.subnet.id }}"
+        description: "Primary ENI for KVM Host"
+        groups:
+          - "{{ sg.group_id }}"
+        private_ip_addresses: "{{ private_ips }}"
+        region: "{{ aws_region }}"
+      register: eni
+
+    - name: Generate block device mappings
+      set_fact:
+        block_device_mappings: >-
+          {{
+            [
+              {
+                'device_name': '/dev/sda1',
+                'ebs': {
+                  'volume_size': 80,
+                  'volume_type': 'gp3',
+                  'delete_on_termination': true
+                }
+              }
+            ] +
+            (range(disk_config.num_data_disks) | map('community.aws.ec2_instance_device_name', 'sdb') | map('community.aws.ec2_instance_block_device', disk_config.total_data_size_gb / disk_config.num_data_disks, 'gp3', true) | list)
+          }}
+
+    - name: Launch the c5n.metal instance
+      community.aws.ec2_instance:
+        name: "{{ instance_name }}"
+        key_name: "{{ key_name }}"
+        instance_type: "{{ instance_type }}"
+        image_id: "{{ ami_id }}"
+        network:
+          network_interfaces:
+            - device_index: 0
+              network_interface_id: "{{ eni.interface.id }}"
+        block_device_mappings: "{{ block_device_mappings }}"
+        region: "{{ aws_region }}"
+        wait: yes
+      register: ec2
+
+    - name: Print instance details
+      debug:
+        msg: "Instance {{ ec2.instance_ids[0] }} is running at {{ ec2.instances[0].public_ip_address }}"

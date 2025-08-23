@@ -1,5 +1,55 @@
-aws-helper/planning/planning.md 是设计文档，所有修改，要先修改设计文档，然后再修改其他文件，如代码。同样，如果有修改代码，也要及时修改设计代码
+# Ansible Playbook Design: AWS KVM Host Deployment
 
-aws-helper/planning/recording.md 是记录文件，流水账一样记录AI修改了什么东西。
+This document outlines the design for an Ansible playbook that automates the deployment of a KVM virtualization host on AWS. The playbook will replicate and enhance the functionality of the original bash script.
 
-这会是一个ansible script子项目，所有修改，都发生在 aws-helper下面
+## 1. Playbook Structure
+
+The playbook will be organized as follows:
+
+-   `aws-helper/main.yml`: The main playbook file containing all the tasks.
+-   `aws-helper/vars/main.yml`: A file to store all configurable variables.
+-   `aws-helper/README.md`: Instructions on how to use the playbook.
+
+## 2. Variables
+
+All user-configurable parameters from the bash script will be moved to `aws-helper/vars/main.yml`. This includes:
+
+-   `aws_region`
+-   `instance_type`
+-   `ami_id`
+-   `key_name`
+-   `instance_name`
+-   `vpc_cidr`
+-   `subnet_cidr`
+-   `host_ip`
+-   `kvm_ip_range` (a dictionary containing prefix, start, and end)
+-   `disk_config` (a dictionary for total size and number of disks)
+
+## 3. Tasks
+
+The playbook in `main.yml` will be divided into the following tasks, mirroring the steps in the original script:
+
+1.  **VPC and Network Setup**:
+    *   Create a VPC using `community.aws.ec2_vpc_net`.
+    *   Create a subnet using `community.aws.ec2_vpc_subnet`.
+    *   Create an Internet Gateway using `community.aws.ec2_vpc_igw`.
+    *   Create a route table and associate it with the subnet using `community.aws.ec2_vpc_route_table`.
+    *   Enable public IP mapping on the subnet.
+
+2.  **Security Group Setup**:
+    *   Create a security group using `community.aws.ec2_security_group`.
+    *   Add ingress rules for SSH and internal VPC traffic.
+
+3.  **ENI and IP Address Preparation**:
+    *   Create the Elastic Network Interface (ENI) using `community.aws.ec2_eni`.
+    *   Dynamically generate the list of private IP addresses (for the host and KVM guests) and assign them to the ENI.
+
+4.  **EC2 Instance Launch**:
+    *   Launch the `c5n.metal` instance using `community.aws.ec2_instance`.
+    *   Attach the previously created ENI.
+    *   Define the block device mappings for the root and data volumes.
+    *   Wait for the instance to be in the 'running' state.
+
+## 4. Execution Flow
+
+The playbook will be executed from a single command (`ansible-playbook main.yml`). It will be idempotent, meaning it can be run multiple times without causing errors if the resources already exist. The state of the resources will be checked, and tasks will be skipped if the resources are already in the desired state.

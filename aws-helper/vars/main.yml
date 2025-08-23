@@ -1,0 +1,23 @@
+---
+# AWS Configuration
+aws_region: "us-west-2"
+instance_type: "c5n.metal"
+ami_id: "ami-0adebe3adcec1fa34"  # Rocky Linux 9 for us-west-2
+key_name: "wzh-key"
+instance_name: "helper-macvtap"
+
+# Network Configuration
+vpc_cidr: "192.168.99.0/24"
+subnet_cidr: "192.168.99.0/24"
+host_ip: "192.168.99.1"
+
+# KVM Guest IP Range
+kvm_ip_range:
+  prefix: "192.168.99"
+  start: 21
+  end: 49
+
+# Disk Configuration
+disk_config:
+  total_data_size_gb: 800
+  num_data_disks: 25
