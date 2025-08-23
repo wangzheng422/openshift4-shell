@@ -30,22 +30,22 @@ All user-configurable parameters from the bash script will be moved to `aws-help
 The playbook in `aws-helper.yaml` will be divided into the following tasks, mirroring the steps in the original script:
 
 1.  **VPC and Network Setup**:
-    *   Create a VPC using `community.aws.ec2_vpc_net`.
-    *   Create a subnet using `community.aws.ec2_vpc_subnet`.
-    *   Create an Internet Gateway using `community.aws.ec2_vpc_igw`.
-    *   Create a route table and associate it with the subnet using `community.aws.ec2_vpc_route_table`.
+    *   Create a VPC using `amazon.aws.ec2_vpc_net`.
+    *   Create a subnet using `amazon.aws.ec2_vpc_subnet`.
+    *   Create an Internet Gateway using `amazon.aws.ec2_vpc_igw`.
+    *   Create a route table and associate it with the subnet using `amazon.aws.ec2_vpc_route_table`.
     *   Enable public IP mapping on the subnet.
 
 2.  **Security Group Setup**:
-    *   Create a security group using `community.aws.ec2_security_group`.
+    *   Create a security group using `amazon.aws.ec2_group`.
     *   Add ingress rules for SSH and internal VPC traffic.
 
 3.  **ENI and IP Address Preparation**:
-    *   Create the Elastic Network Interface (ENI) using `community.aws.ec2_eni`.
+    *   Create the Elastic Network Interface (ENI) using `amazon.aws.ec2_eni`.
     *   Dynamically generate the list of private IP addresses (for the host and KVM guests) and assign them to the ENI.
 
 4.  **EC2 Instance Launch**:
-    *   Launch the `c5n.metal` instance using `community.aws.ec2_instance`.
+    *   Launch the `c5n.metal` instance using `amazon.aws.ec2_instance`.
     *   Attach the previously created ENI.
     *   Define the block device mappings for the root and data volumes.
     *   Wait for the instance to be in the 'running' state.

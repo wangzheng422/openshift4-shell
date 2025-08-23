@@ -12,7 +12,7 @@
         aws_region: "{{ aws_region }}"
 
     - name: Create a VPC
-      community.aws.ec2_vpc_net:
+      amazon.aws.ec2_vpc_net:
         name: "KVM-VPC"
         cidr_block: "{{ vpc_cidr }}"
         region: "{{ aws_region }}"
@@ -21,7 +21,7 @@
       register: vpc
 
     - name: Create a subnet
-      community.aws.ec2_vpc_subnet:
+      amazon.aws.ec2_vpc_subnet:
         vpc_id: "{{ vpc.vpc.id }}"
         cidr: "{{ subnet_cidr }}"
         region: "{{ aws_region }}"
@@ -31,7 +31,7 @@
       register: subnet
 
     - name: Create an Internet Gateway
-      community.aws.ec2_vpc_igw:
+      amazon.aws.ec2_vpc_igw:
         vpc_id: "{{ vpc.vpc.id }}"
         region: "{{ aws_region }}"
         tags:
@@ -39,7 +39,7 @@
       register: igw
 
     - name: Create a route table
-      community.aws.ec2_vpc_route_table:
+      amazon.aws.ec2_vpc_route_table:
         vpc_id: "{{ vpc.vpc.id }}"
         region: "{{ aws_region }}"
         subnets:
@@ -51,7 +51,7 @@
           Name: "KVM-RouteTable"
 
     - name: Create Security Group
-      community.aws.ec2_group:
+      amazon.aws.ec2_group:
         name: "{{ instance_name }}-sg"
         description: "Security group for KVM Host"
         vpc_id: "{{ vpc.vpc.id }}"
@@ -72,34 +72,22 @@
         private_ips: "{{ [host_ip] + range(kvm_ip_range.start, kvm_ip_range.end + 1) | map('regex_replace', '^(.*)$', kvm_ip_range.prefix + '.\\1') | list }}"
 
     - name: Create Network Interface (ENI)
-      community.aws.ec2_eni:
+      amazon.aws.ec2_eni:
         subnet_id: "{{ subnet.subnet.id }}"
         description: "Primary ENI for KVM Host"
-        groups:
+        security_groups:
           - "{{ sg.group_id }}"
-        private_ip_addresses: "{{ private_ips }}"
+        private_ip_address: "{{ private_ips[0] }}"
+        secondary_private_ip_addresses: "{{ private_ips[1:] }}"
         region: "{{ aws_region }}"
       register: eni
 
     - name: Generate block device mappings
       set_fact:
-        block_device_mappings: >-
-          {{
-            [
-              {
-                'device_name': '/dev/sda1',
-                'ebs': {
-                  'volume_size': 80,
-                  'volume_type': 'gp3',
-                  'delete_on_termination': true
-                }
-              }
-            ] +
-            (range(disk_config.num_data_disks) | map('community.aws.ec2_instance_device_name', 'sdb') | map('community.aws.ec2_instance_block_device', disk_config.total_data_size_gb / disk_config.num_data_disks, 'gp3', true) | list)
-          }}
+        block_device_mappings: "{{ [{'device_name': '/dev/sda1', 'ebs': {'volume_size': 80, 'volume_type': 'gp3', 'delete_on_termination': true}}] + (range(disk_config.num_data_disks)|map('extract', disk_config, ['total_data_size_gb', 'num_data_disks'])|map('community.general.dict_to_list')|map('map', 'community.general.dict_to_list')|map('join', '')|list) }}"
 
     - name: Launch the c5n.metal instance
-      community.aws.ec2_instance:
+      amazon.aws.ec2_instance:
         name: "{{ instance_name }}"
         key_name: "{{ key_name }}"
         instance_type: "{{ instance_type }}"
