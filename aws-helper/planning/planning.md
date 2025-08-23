@@ -6,7 +6,7 @@ This document outlines the design for an Ansible playbook that automates the dep
 
 The playbook will be organized as follows:
 
--   `aws-helper/main.yml`: The main playbook file containing all the tasks.
+-   `aws-helper/aws-helper.yaml`: The main playbook file containing all the tasks.
 -   `aws-helper/vars/main.yml`: A file to store all configurable variables.
 -   `aws-helper/README.md`: Instructions on how to use the playbook.
 
@@ -27,7 +27,7 @@ All user-configurable parameters from the bash script will be moved to `aws-help
 
 ## 3. Tasks
 
-The playbook in `main.yml` will be divided into the following tasks, mirroring the steps in the original script:
+The playbook in `aws-helper.yaml` will be divided into the following tasks, mirroring the steps in the original script:
 
 1.  **VPC and Network Setup**:
     *   Create a VPC using `community.aws.ec2_vpc_net`.
@@ -52,4 +52,4 @@ The playbook in `main.yml` will be divided into the following tasks, mirroring t
 
 ## 4. Execution Flow
 
-The playbook will be executed from a single command (`ansible-playbook main.yml`). It will be idempotent, meaning it can be run multiple times without causing errors if the resources already exist. The state of the resources will be checked, and tasks will be skipped if the resources are already in the desired state.
+The playbook will be executed from a single command (`ansible-playbook aws-helper.yaml`). It will be idempotent, meaning it can be run multiple times without causing errors if the resources already exist. The state of the resources will be checked, and tasks will be skipped if the resources are already in the desired state.
