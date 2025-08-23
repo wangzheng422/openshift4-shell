@@ -47,7 +47,7 @@ The playbook in `aws-helper.yaml` will be divided into the following tasks, mirr
 4.  **EC2 Instance Launch**:
     *   Launch the `c5n.metal` instance using `amazon.aws.ec2_instance`.
     *   Attach the previously created ENI.
-    *   Define the block device mappings for the root and data volumes.
+    *   Define the block device mappings for the root and data volumes. The logic for generating these mappings will be simplified for clarity and correctness.
     *   Wait for the instance to be in the 'running' state.
 
 ## 4. Execution Flow

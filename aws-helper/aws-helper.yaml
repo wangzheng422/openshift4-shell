@@ -84,7 +84,14 @@
 
     - name: Generate block device mappings
       set_fact:
-        block_device_mappings: "{{ [{'device_name': '/dev/sda1', 'ebs': {'volume_size': 80, 'volume_type': 'gp3', 'delete_on_termination': true}}] + (range(disk_config.num_data_disks)|map('extract', disk_config, ['total_data_size_gb', 'num_data_disks'])|map('community.general.dict_to_list')|map('map', 'community.general.dict_to_list')|map('join', '')|list) }}"
+        block_device_mappings: |
+          {% set mappings = [{'device_name': '/dev/sda1', 'ebs': {'volume_size': 80, 'volume_type': 'gp3', 'delete_on_termination': true}}] %}
+          {% set individual_disk_size_gb = (disk_config.total_data_size_gb / disk_config.num_data_disks) | int %}
+          {% for i in range(disk_config.num_data_disks) %}
+          {%   set device_name = '/dev/sd' + ('b' | ord + i) | chr %}
+          {%   set _ = mappings.append({'device_name': device_name, 'ebs': {'volume_size': individual_disk_size_gb, 'volume_type': 'gp3', 'delete_on_termination': true}}) %}
+          {% endfor %}
+          {{ mappings }}
 
     - name: Launch the c5n.metal instance
       amazon.aws.ec2_instance:

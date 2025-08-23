@@ -8,3 +8,7 @@ aws-helper/planning/recording.md 是记录文件，流水账一样记录AI修改
 -   **Action**: Corrected the Ansible collection in `aws-helper.yaml` from `community.aws` to `amazon.aws` to resolve module loading errors.
 -   **Action**: Updated `planning.md` to reflect the change from `community.aws` to `amazon.aws` and corrected the security group module name.
 -   **Action**: Corrected the parameters for the `amazon.aws.ec2_eni` module in `aws-helper.yaml`, changing `groups` to `security_groups` and splitting `private_ip_addresses` into `private_ip_address` and `secondary_private_ip_addresses`.
+
+## 2025-08-24
+
+-   **Action**: Simplified the block device mapping logic in `aws-helper.yaml` to be more readable and maintainable.
