@@ -105,10 +105,9 @@
         key_name: "{{ key_name }}"
         instance_type: "{{ instance_type }}"
         image_id: "{{ ami_id }}"
-        network:
-          network_interfaces:
-            - device_index: 0
-              network_interface_id: "{{ eni.interface.id }}"
+        network_interfaces:
+          - device_index: 0
+            network_interface_id: "{{ eni.interface.id }}"
         volumes: "{{ block_device_mappings | from_json }}"
         region: "{{ aws_region }}"
         wait: yes
