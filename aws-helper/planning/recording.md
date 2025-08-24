@@ -12,3 +12,6 @@ aws-helper/planning/recording.md 是记录文件，流水账一样记录AI修改
 ## 2025-08-24
 
 -   **Action**: Simplified the block device mapping logic in `aws-helper.yaml` to be more readable and maintainable.
+-   **Action**: Refactored the `Generate block device mappings` task in `aws-helper.yaml` to dynamically create a root disk and a configurable number of data disks based on variables.
+-   **Action**: Updated `aws-helper/vars/main.yml` to include `root_disk_size_gb` and adjusted `total_data_size_gb` for the new disk configuration.
+-   **Action**: Updated `aws-helper/planning/planning.md` to detail the new block device mapping strategy.

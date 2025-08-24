@@ -19,5 +19,6 @@ kvm_ip_range:
 
 # Disk Configuration
 disk_config:
+  root_disk_size_gb: 80
   total_data_size_gb: 800
   num_data_disks: 25

@@ -85,13 +85,19 @@
     - name: Generate block device mappings
       set_fact:
         block_device_mappings: |
-          {% set mappings = [{'device_name': '/dev/sda1', 'ebs': {'volume_size': 80, 'volume_type': 'gp3', 'delete_on_termination': true}}] %}
-          {% set individual_disk_size_gb = (disk_config.total_data_size_gb / disk_config.num_data_disks) | int %}
-          {% for i in range(disk_config.num_data_disks) %}
-          {%   set device_name = '/dev/sd' + ('b' | ord + i) | chr %}
-          {%   set _ = mappings.append({'device_name': device_name, 'ebs': {'volume_size': individual_disk_size_gb, 'volume_type': 'gp3', 'delete_on_termination': true}}) %}
-          {% endfor %}
-          {{ mappings }}
+          {% set mappings = [] %}
+          {% set root_disk = {'device_name': '/dev/sda1', 'ebs': {'volume_size': disk_config.root_disk_size_gb | default(60), 'volume_type': 'gp3', 'iops': 3000, 'delete_on_termination': true}} %}
+          {% set _ = mappings.append(root_disk) %}
+          {% if disk_config.num_data_disks > 0 %}
+          {%   set individual_disk_size_gb = (disk_config.total_data_size_gb / disk_config.num_data_disks) | int %}
+          {%   set device_letters = 'bcdefghijklmnopqrstuvwxyz' %}
+          {%   for i in range(disk_config.num_data_disks) %}
+          {%     set device_name = '/dev/sd' + device_letters[i] %}
+          {%     set data_disk = {'device_name': device_name, 'ebs': {'volume_size': individual_disk_size_gb, 'volume_type': 'gp3', 'iops': 3000, 'delete_on_termination': true}} %}
+          {%     set _ = mappings.append(data_disk) %}
+          {%   endfor %}
+          {% endif %}
+          {{ mappings | to_json }}
 
     - name: Launch the c5n.metal instance
       amazon.aws.ec2_instance:
