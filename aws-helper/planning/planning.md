@@ -49,8 +49,8 @@ The playbook in `aws-helper.yaml` will be divided into the following tasks, mirr
     *   Dynamically generate the list of private IP addresses (for the host and KVM guests) and assign them to the ENI.
 
 4.  **EC2 Instance Launch**:
-    *   Launch the `c5n.metal` instance using `amazon.aws.ec2_instance`.
-    *   Attach the previously created ENI using the `network_interfaces` parameter.
+    *   Launch the `c5n.metal` instance using `amazon.aws.ec2_instance`, specifying the subnet and security groups directly.
+    *   Attach the previously created ENI to the instance in a separate task after it has been launched.
     *   Define the volumes for the root and data disks. The logic for generating these mappings will be implemented in Jinja2 within the playbook.
         *   **Root Disk**: A fixed root disk (`/dev/sda1`) will be defined with a specific size and type (e.g., 60GB gp3).
         *   **Data Disks**: A configurable number of data disks will be created. The total data volume size will be divided equally among these disks. Device names will be assigned sequentially from `/dev/sdb` to `/dev/sdz`.
