@@ -22,6 +22,10 @@ All user-configurable parameters from the bash script will be moved to `aws-help
 -   `vpc_cidr`
 -   `subnet_cidr`
 -   `host_ip`
+-   `vpc_name`
+-   `subnet_name`
+-   `igw_name`
+-   `route_table_name`
 -   `kvm_ip_range` (a dictionary containing prefix, start, and end)
 -   `disk_config` (a dictionary for total size and number of disks)
 

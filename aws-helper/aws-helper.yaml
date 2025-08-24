@@ -13,11 +13,11 @@
 
     - name: Create a VPC
       amazon.aws.ec2_vpc_net:
-        name: "KVM-VPC"
+        name: "{{ vpc_name }}"
         cidr_block: "{{ vpc_cidr }}"
         region: "{{ aws_region }}"
         tags:
-          Name: "KVM-VPC"
+          Name: "{{ vpc_name }}"
       register: vpc
 
     - name: Create a subnet
@@ -27,7 +27,7 @@
         region: "{{ aws_region }}"
         map_public: yes
         tags:
-          Name: "KVM-Subnet"
+          Name: "{{ subnet_name }}"
       register: subnet
 
     - name: Create an Internet Gateway
@@ -35,7 +35,7 @@
         vpc_id: "{{ vpc.vpc.id }}"
         region: "{{ aws_region }}"
         tags:
-          Name: "KVM-IGW"
+          Name: "{{ igw_name }}"
       register: igw
 
     - name: Create a route table
@@ -48,7 +48,7 @@
           - dest: "0.0.0.0/0"
             gateway_id: "{{ igw.gateway_id }}"
         tags:
-          Name: "KVM-RouteTable"
+          Name: "{{ route_table_name }}"
 
     - name: Create Security Group
       amazon.aws.ec2_group:

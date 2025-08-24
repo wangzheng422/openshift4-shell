@@ -15,3 +15,6 @@ aws-helper/planning/recording.md 是记录文件，流水账一样记录AI修改
 -   **Action**: Refactored the `Generate block device mappings` task in `aws-helper.yaml` to dynamically create a root disk and a configurable number of data disks based on variables.
 -   **Action**: Updated `aws-helper/vars/main.yml` to include `root_disk_size_gb` and adjusted `total_data_size_gb` for the new disk configuration.
 -   **Action**: Updated `aws-helper/planning/planning.md` to detail the new block device mapping strategy.
+-   **Action**: Moved hardcoded resource names (VPC, Subnet, IGW, Route Table) from `aws-helper.yaml` to `aws-helper/vars/main.yml` to improve configurability.
+-   **Action**: Updated `aws-helper.yaml` to use the new variables for resource names.
+-   **Action**: Updated `aws-helper/planning/planning.md` to include the new variables in the design documentation.
