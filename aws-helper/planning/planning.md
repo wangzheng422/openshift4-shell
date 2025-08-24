@@ -51,7 +51,7 @@ The playbook in `aws-helper.yaml` will be divided into the following tasks, mirr
 4.  **EC2 Instance Launch**:
     *   Launch the `c5n.metal` instance using `amazon.aws.ec2_instance`.
     *   Attach the previously created ENI.
-    *   Define the block device mappings for the root and data volumes. The logic for generating these mappings will be implemented in Jinja2 within the playbook.
+    *   Define the volumes for the root and data disks. The logic for generating these mappings will be implemented in Jinja2 within the playbook.
         *   **Root Disk**: A fixed root disk (`/dev/sda1`) will be defined with a specific size and type (e.g., 60GB gp3).
         *   **Data Disks**: A configurable number of data disks will be created. The total data volume size will be divided equally among these disks. Device names will be assigned sequentially from `/dev/sdb` to `/dev/sdz`.
     *   Wait for the instance to be in the 'running' state.

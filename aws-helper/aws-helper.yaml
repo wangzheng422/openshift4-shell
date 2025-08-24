@@ -109,7 +109,7 @@
           network_interfaces:
             - device_index: 0
               network_interface_id: "{{ eni.interface.id }}"
-        block_device_mappings: "{{ block_device_mappings }}"
+        volumes: "{{ block_device_mappings | from_json }}"
         region: "{{ aws_region }}"
         wait: yes
       register: ec2

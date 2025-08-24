@@ -18,3 +18,6 @@ aws-helper/planning/recording.md 是记录文件，流水账一样记录AI修改
 -   **Action**: Moved hardcoded resource names (VPC, Subnet, IGW, Route Table) from `aws-helper.yaml` to `aws-helper/vars/main.yml` to improve configurability.
 -   **Action**: Updated `aws-helper.yaml` to use the new variables for resource names.
 -   **Action**: Updated `aws-helper/planning/planning.md` to include the new variables in the design documentation.
+
+-   **Action**: Corrected the `amazon.aws.ec2_instance` module in `aws-helper.yaml` by replacing the unsupported `block_device_mappings` parameter with `volumes` and adding the `from_json` filter to ensure the data is parsed correctly.
+-   **Action**: Updated `aws-helper/planning/planning.md` to reflect the parameter change from `block_device_mappings` to `volumes`.
