@@ -105,20 +105,13 @@
         key_name: "{{ key_name }}"
         instance_type: "{{ instance_type }}"
         image_id: "{{ ami_id }}"
-        subnet_id: "{{ subnet.subnet.id }}"
-        security_groups:
-          - "{{ sg.group_id }}"
+        network_interfaces_ids:
+          - id: "{{ eni.interface.id }}"
+            device_index: 0
         volumes: "{{ block_device_mappings | from_json }}"
         region: "{{ aws_region }}"
         wait: yes
       register: ec2
-
-    - name: Attach the ENI to the c5n.metal instance
-      amazon.aws.ec2_eni:
-        eni_id: "{{ eni.interface.id }}"
-        instance_id: "{{ ec2.instance_ids[0] }}"
-        device_index: 0
-        region: "{{ aws_region }}"
 
     - name: Print instance details
       debug:

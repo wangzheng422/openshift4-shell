@@ -23,3 +23,9 @@ aws-helper/planning/recording.md 是记录文件，流水账一样记录AI修改
 -   **Action**: Fixed a deprecation warning in `aws-helper.yaml` by replacing the `network` parameter with `network_interfaces` in the `amazon.aws.ec2_instance` module.
 -   **Action**: Resolved an issue with attaching a network interface to a bare metal instance by modifying `aws-helper.yaml`. The `network_interfaces` parameter was removed from the `amazon.aws.ec2_instance` module. Instead, the instance is now launched with `subnet_id` and `security_groups`, and the ENI is attached in a separate, subsequent task.
 -   **Action**: Updated `aws-helper/planning/planning.md` to reflect the new instance launch and ENI attachment process.
+
+## 2025-08-25
+
+-   **Action**: Attempted to fix the ENI attachment issue by using the `network_interfaces` parameter in `ec2_instance`, which failed due to unsupported sub-parameters.
+-   **Action**: Researched the `amazon.aws.ec2_instance` module documentation and identified the correct parameter `network_interfaces_ids` for attaching an existing ENI at launch.
+-   **Action**: Updated `aws-helper/planning/planning.md` to reflect the use of the `network_interfaces_ids` parameter.
