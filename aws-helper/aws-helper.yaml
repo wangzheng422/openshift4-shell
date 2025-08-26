@@ -80,6 +80,7 @@
         private_ip_address: "{{ private_ips[0] }}"
         secondary_private_ip_addresses: "{{ private_ips[1:] }}"
         region: "{{ aws_region }}"
+        source_dest_check: no
       register: eni
 
     - name: Generate block device mappings
