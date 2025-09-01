@@ -79,17 +79,6 @@
     #   set_fact:
     #     private_ips: "{{ [host_ip] + range(kvm_ip_range.start, kvm_ip_range.end + 1) | map('regex_replace', '^(.*)$', kvm_ip_range.prefix + '.\\1') | list }}"
 
-    - name: Create Network Interface (ENI)
-      amazon.aws.ec2_eni:
-        subnet_id: "{{ subnets.results[0].subnet.id }}"
-        description: "Primary ENI for KVM Host"
-        security_groups:
-          - "{{ sg.group_id }}"
-        # private_ip_address: "{{ private_ips[0] }}"
-        # secondary_private_ip_addresses: "{{ private_ips[1:] }}"
-        region: "{{ aws_region }}"
-        source_dest_check: no
-      register: eni
 
     - name: Generate block device mappings
       set_fact:
@@ -116,9 +105,11 @@
         key_name: "{{ key_name }}"
         instance_type: "{{ instance_type }}"
         image_id: "{{ ami_id }}"
-        network_interfaces_ids:
-          - id: "{{ eni.interface.id }}"
-            device_index: 0
+        subnet_id: "{{ subnets.results[0].subnet.id }}"
+        security_groups:
+          - "{{ sg.group_id }}"
+        source_dest_check: no
+        assign_public_ip: yes
         volumes: "{{ block_device_mappings | from_json }}"
         region: "{{ aws_region }}"
         wait: yes
