@@ -4,7 +4,7 @@ aws_region: "us-west-2"
 instance_type: "c5n.metal"
 ami_id: "ami-0adebe3adcec1fa34"  # Rocky Linux 9 for us-west-2
 key_name: "wzh-key"
-instance_name: "helper-macvtap"
+instance_name: "helper-bridge"
 
 # Network Configuration
 vpc_cidr: "10.0.0.0/16"
