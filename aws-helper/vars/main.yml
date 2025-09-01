@@ -7,8 +7,8 @@ key_name: "wzh-key"
 instance_name: "helper-macvtap"
 
 # Network Configuration
-vpc_cidr: "192.168.99.0/24"
-subnet_cidr: "192.168.99.0/24"
+vpc_cidr: "10.0.0.0/16"
+subnet_cidr: "10.0.1.0/24"
 # host_ip: "192.168.99.11"
 vpc_name: "KVM-VPC"
 subnet_name: "KVM-Subnet"
