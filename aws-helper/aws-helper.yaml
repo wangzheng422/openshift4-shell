@@ -67,9 +67,9 @@
             rule_desc: "Allow all traffic within the security group"
       register: sg
 
-    - name: Generate list of private IPs for ENI
-      set_fact:
-        private_ips: "{{ [host_ip] + range(kvm_ip_range.start, kvm_ip_range.end + 1) | map('regex_replace', '^(.*)$', kvm_ip_range.prefix + '.\\1') | list }}"
+    # - name: Generate list of private IPs for ENI
+    #   set_fact:
+    #     private_ips: "{{ [host_ip] + range(kvm_ip_range.start, kvm_ip_range.end + 1) | map('regex_replace', '^(.*)$', kvm_ip_range.prefix + '.\\1') | list }}"
 
     - name: Create Network Interface (ENI)
       amazon.aws.ec2_eni:
@@ -77,8 +77,8 @@
         description: "Primary ENI for KVM Host"
         security_groups:
           - "{{ sg.group_id }}"
-        private_ip_address: "{{ private_ips[0] }}"
-        secondary_private_ip_addresses: "{{ private_ips[1:] }}"
+        # private_ip_address: "{{ private_ips[0] }}"
+        # secondary_private_ip_addresses: "{{ private_ips[1:] }}"
         region: "{{ aws_region }}"
         source_dest_check: no
       register: eni

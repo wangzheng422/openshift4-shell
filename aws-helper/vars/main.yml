@@ -9,17 +9,17 @@ instance_name: "helper-macvtap"
 # Network Configuration
 vpc_cidr: "192.168.99.0/24"
 subnet_cidr: "192.168.99.0/24"
-host_ip: "192.168.99.11"
+# host_ip: "192.168.99.11"
 vpc_name: "KVM-VPC"
 subnet_name: "KVM-Subnet"
 igw_name: "KVM-IGW"
 route_table_name: "KVM-RouteTable"
 
 # KVM Guest IP Range
-kvm_ip_range:
-  prefix: "192.168.99"
-  start: 21
-  end: 49
+# kvm_ip_range:
+#   prefix: "192.168.99"
+#   start: 21
+#   end: 49
 
 # Disk Configuration
 disk_config:
