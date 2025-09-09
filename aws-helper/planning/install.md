@@ -6,7 +6,7 @@ click below to subscribe to rocky9 first
 ```bash
 ansible-galaxy collection install amazon.aws
 
-pip install botocore boto3
+pip install botocore boto3 netaddr
 
 ansible-playbook aws-helper.yaml --check --diff -vvv
 

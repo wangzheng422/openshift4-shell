@@ -21,7 +21,7 @@
       register: vpc
 
     - name: Get availability zones for region
-      amazon.aws.ec2_region_info:
+      amazon.aws.aws_az_info:
         region: "{{ aws_region }}"
       register: azs
 
@@ -31,7 +31,7 @@
         region: "{{ aws_region }}"
         az: "{{ item.zone_name }}"
         map_public: yes
-        cidr: "{{ vpc_cidr | ansible.utils.ip_nth_subnet(24, index) }}"
+        cidr: "{{ vpc_cidr | ansible.utils.ipaddr(24, index+10) }}"
         tags:
           Name: "{{ subnet_name }}-{{ item.zone_name }}"
       loop: "{{ azs.availability_zones }}"
@@ -99,13 +99,29 @@
           {% endif %}
           {{ mappings | to_json }}
 
+    - name: Find availability zones that support the instance type
+      amazon.aws.aws_az_info:
+        region: "{{ aws_region }}"
+        filters:
+          instance-type:
+            - "{{ instance_type }}"
+      register: instance_type_info
+
+    - name: Extract the available zones
+      set_fact:
+        available_zones_for_instance_type: "{{ instance_type_info.instance_types[instance_type].usages | map(attribute='availability_zone') | list }}"
+
+    - name: Find a suitable subnet in an available zone
+      set_fact:
+        target_subnet_id: "{{ (subnets.results | selectattr('item.zone_name', 'in', available_zones_for_instance_type) | list | first).subnet.id }}"
+
     - name: Launch the c5n.metal instance
       amazon.aws.ec2_instance:
         name: "{{ instance_name }}"
         key_name: "{{ key_name }}"
         instance_type: "{{ instance_type }}"
         image_id: "{{ ami_id }}"
-        subnet_id: "{{ subnets.results[0].subnet.id }}"
+        subnet_id: "{{ target_subnet_id }}"
         security_groups:
           - "{{ sg.group_id }}"
         source_dest_check: no
