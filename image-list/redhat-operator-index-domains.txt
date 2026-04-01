@@ -1,0 +1,2 @@
+  20702 registry.redhat.io
+     19 registry.access.redhat.com
