@@ -8,7 +8,7 @@ parm_local_reg=$1
 
 
 
-cat *-domains.txt | awk '{print $2}' | sort | uniq > mirror.domain.list
+# cat *-domains.txt | awk '{print $2}' | sort | uniq > mirror.domain.list
 # cat pull.image.ok.list ${parm_file} mapping-*.txt | sed 's/\/.*$//g' | sort | uniq > mirror.domain.list
 
 cat << EOF > ./image.registries.conf
