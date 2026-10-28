@@ -1,3 +1,11 @@
 {
-    "ansible.python.interpreterPath": "/opt/anaconda3/envs/py312/bin/python"
+    "ansible.python.interpreterPath": "/Users/zhengwan/.venvs/py312/bin/python",
+    "python.defaultInterpreterPath": "/Users/zhengwan/.venvs/py312/bin/python",
+    "python-envs.pythonProjects": [
+        {
+            "path": ".",
+            "envManager": "ms-python.python:venv",
+            "packageManager": "ms-python.python:pip"
+        }
+    ]
 }
