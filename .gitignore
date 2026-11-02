@@ -51,3 +51,5 @@ Makefile
 .vscode
 .clinerules
 .ansible
+
+**/.DS_Store
